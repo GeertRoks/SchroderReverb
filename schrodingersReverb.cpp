@@ -10,20 +10,16 @@ SchrodingersReverb::~SchrodingersReverb() {
 }//~SchrodingersReverb()
 
 
-float SchrodingersReverb::process(void* x) {
+float SchrodingersReverb::process(void* x, Comb** combs) {
 //Reference: https://www.dsprelated.com/freebooks/pasp/Schroeder_Reverberators.html
   float* x_val = (float *) x;
   float resC1, resC2, resC3, resC4;
   float t = *x_val;
-  Comb *combThread1 = new Comb(901, 0.805);
-  Comb *combThread2 = new Comb(778, 0.827);
-  Comb *combThread3 = new Comb(1011, 0.783);
-  Comb *combThread4 = new Comb(1123, 0.764);
 
-  std::thread th(&Comb::process, combThread1, t, &resC1);
-  std::thread thr(&Comb::process, combThread2, t, &resC2);
-  std::thread thre(&Comb::process, combThread3, t, &resC3);
-  std::thread threa(&Comb::process, combThread4, t, &resC4);
+  std::thread th(&Comb::process, combs[0], t, &resC1);
+  std::thread thr(&Comb::process, combs[1], t, &resC2);
+  std::thread thre(&Comb::process, combs[2], t, &resC3);
+  std::thread threa(&Comb::process, combs[3], t, &resC4);
   th.join();
   thr.join();
   thre.join();

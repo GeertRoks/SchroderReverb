@@ -11,7 +11,7 @@ public:
   SchrodingersReverb(int reverbTime);
   ~SchrodingersReverb();
 
-  float process(void* x);
+  float process(void* x, Comb** combs);
 
 private:
   int reverbTime = 0; //ms ???
