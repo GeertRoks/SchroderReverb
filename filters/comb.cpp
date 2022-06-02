@@ -26,7 +26,6 @@ void Comb::process(float x, float* result) {
   //x is input (x[n]) and y is output (y[n])
   float y = x + this->g * filterBuffer[index];
   updateBuffer(y);
-  std::cout << "this is y" << y << std::endl;
   *result = y;
 }//process()
 

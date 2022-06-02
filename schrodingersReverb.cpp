@@ -27,7 +27,7 @@ float SchrodingersReverb::process(void* x, Comb** combs) {
  
   float y = (resC1 + resC2 + resC3 + resC4) * 0.25;
 
-  std::cout << "result of y" << y << std::endl;
+//  std::cout << "result of y" << y << std::endl;
  // y = allpass1.process(y);
   //y = allpass2.process(y);
   //y = allpass3.process(y);

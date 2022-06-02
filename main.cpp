@@ -20,7 +20,7 @@ int main() {
 
   auto start = std::chrono::high_resolution_clock::now();
 
-  for (int i = 0; i < 64; i++) {
+  for (int i = 0; i < 1000; i++) {
   	reverb.process((void*) &x, combs);
   }
   auto stop = std::chrono::high_resolution_clock::now();
