@@ -3,7 +3,9 @@
 
 int main() {
   SchrodingersReverb reverb(0);
-  reverb.process(0.5);
+  int x = 1;
+
+  reverb.process((void*) &x);
   std::cout << "test complete!" << std::endl;
   return 1;
 }

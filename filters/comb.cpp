@@ -19,15 +19,15 @@ Comb::~Comb() {
 
 
 
-float Comb::process(float x) {
+void Comb::process(float x, float* result) {
 /*
  *  Calculates the filtered sample
  */
-
   //x is input (x[n]) and y is output (y[n])
   float y = x + this->g * filterBuffer[index];
   updateBuffer(y);
-  return y;
+  std::cout << "this is y" << y << std::endl;
+  *result = y;
 }//process()
 
 void Comb::updateBuffer(float input) {

@@ -1,14 +1,13 @@
 CXXFLAGS := -Wall -std=c++11
-CXXFLAGS += $(patsubst %,-I %, $(MODULES))
 LDFLAGS =
 LDLIBS =
 PROGRAM_NAME = test
 
-OBJ = main.o schrodingersReverb.o filters/allpassDFII.o filters/comb.o
+OBJ = main.o schrodingersReverb.o filters/comb.o
 
-all: $(PROGRAM_NAME)
+all: test
 
-$(PROGRAM_NAME): $(OBJ)
+test: $(OBJ)
 	$(CXX) -o $@ $(CXXFLAGS) $(OBJ) $(LDFLAGS) $(LDLIBS)
 
 %.o: %.cpp %.h

@@ -7,7 +7,7 @@ public:
   Comb (unsigned int z, double g);
   virtual ~Comb ();
 
-  float process(float x);
+  void process(float x, float* result);
 
 private:
   void tick();
