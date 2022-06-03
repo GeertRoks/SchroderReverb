@@ -11,10 +11,18 @@ public:
   SchrodingersReverb(int reverbTime);
   ~SchrodingersReverb();
 
-  float process(void* x, Comb** combs);
+  float process(float x);
 
 private:
   int reverbTime = 0; //ms ???
+  float* x_val;
+  float resC1, resC2, resC3, resC4, t;
+  std::thread th, thr, thre, threa;
+
+  Comb *combThread1 = new Comb(901, 0.805);
+  Comb *combThread2 = new Comb(778, 0.827);
+  Comb *combThread3 = new Comb(1011, 0.783);
+  Comb *combThread4 = new Comb(1123, 0.764);
   //AllpassDFII allpass1 = AllpassDFII(125, 0.7);
   //AllpassDFII allpass2 = AllpassDFII(42, 0.7);
   //AllpassDFII allpass3 = AllpassDFII(12, 0.7);
