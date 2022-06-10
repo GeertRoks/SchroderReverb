@@ -3,12 +3,19 @@
 
 TaskAudioIO::TaskAudioIO() {
     adc.begin(SPI_0, BCM2835_SPI_CS0);
+
+    bcm2835_gpio_fsel(18, BCM2835_GPIO_FSEL_ALT5);
+    bcm2835_pwm_set_clock(4);
+    bcm2835_pwm_set_mode(0, 0, 1);
+    bcm2835_pwm_set_range(0, 4096);
+
 }
 
 TaskAudioIO::~TaskAudioIO() {
+    bcm2835_pwm_set_mode(0, 1, 0);
 }
 
-void TaskAudioIO::operator()(std::queue<int>* fifo_adc_out, std::queue<int>* fifo_dac_in, std::chrono::nanoseconds* duration) {
+void TaskAudioIO::run(std::queue<int>* fifo_adc_out, std::queue<int>* fifo_dac_in, std::chrono::nanoseconds* duration) {
 	int counter = 100000;
 	auto start = std::chrono::steady_clock::now();
 	auto stop = std::chrono::steady_clock::now();
@@ -23,6 +30,7 @@ void TaskAudioIO::operator()(std::queue<int>* fifo_adc_out, std::queue<int>* fif
 
 		// retrieve sample from adc
 		fifo_adc_out->push(this->adc.readADC(CH0_1));
+        bcm2835_pwm_set_data(0, fifo_dac_in->front());
 
 		stop = std::chrono::steady_clock::now();
 		elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
