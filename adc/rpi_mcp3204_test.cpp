@@ -9,7 +9,7 @@
 
 int main() {
     std::ofstream o;
-    o.open("/home/reverb/data.txt");
+    //o.open("/home/reverb/data.txt");
     TaskAudioIO audio_io;
 
 
@@ -30,12 +30,12 @@ int main() {
     std::cout << "sample frequency: " << 100000/(duration.count() * 1E-9) << " Hz" << std::endl;
 
     while (!fifo_adc_dac.empty()) {
-        o << fifo_adc_dac.front() << std::endl;
+        //o << fifo_adc_dac.front() << std::endl;
         //std::cout << "sample: " << adc_output.front() << std::endl;
-        fifo_adc_dac.pop();
+        //fifo_adc_dac.pop();
     }
 
-    o.close();
+    //o.close();
 
     return 0;
 }
