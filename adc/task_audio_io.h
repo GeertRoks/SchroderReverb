@@ -1,3 +1,5 @@
+#pragma once
+
 #include <chrono>
 #include <thread>
 #include <queue>
@@ -7,15 +9,18 @@
 
 class TaskAudioIO {
     public:
-        TaskAudioIO();
+        TaskAudioIO(); //default: buffersize = 64, period =  40us (fs=25KHz)
+        TaskAudioIO(int buffersize, int period_us);
         ~TaskAudioIO();
 
-	// object callable: this function can be called directly to the thread, without 
-	// first creating a class instance in the main
-        void run(std::queue<int>* fifo_adc_out, std::queue<int>* fifo_dac_in, std::chrono::nanoseconds* duration);
+        void run(std::queue<int>* fifo_adc_out, std::queue<int>* fifo_dac_in);
+        void run_debug(std::queue<int>* fifo_adc_out, std::queue<int>* fifo_dac_in, std::chrono::nanoseconds* duration, int counter); //debug variant
 
     private:
+        void pwm_init();
+
         MCP3204 adc;
-        const std::chrono::microseconds period = std::chrono::microseconds(50);
+        const std::chrono::microseconds period;
+        const int buffersize;
 
 };
