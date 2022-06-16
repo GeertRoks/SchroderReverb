@@ -1,4 +1,5 @@
 schroederreverb
 adc_test
+queue_perf_test
 adc_test.dat
 *.o

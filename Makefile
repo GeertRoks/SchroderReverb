@@ -15,6 +15,9 @@ $(PROGRAM_NAME): $(OBJ)
 	$(CXX) -o $@ $(CXXFLAGS) $(OBJ) $(LDFLAGS) $(LDLIBS)
 
 adc_test: adc/rpi_mcp3204_test.o $(ADC_OBJ)
+	$(CXX) -o $@ $(CXXFLAGS) $< $(ADC_OBJ) $(LDFLAGS) $(LDLIBS)
+
+queue_perf_test: random_tests/queue_perf.o
 	$(CXX) -o $@ $(CXXFLAGS) $< $(LDFLAGS) $(LDLIBS)
 
 %.o: %.cpp %.h
