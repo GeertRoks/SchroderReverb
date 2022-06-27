@@ -15,6 +15,7 @@ public:
 
   float process(float x);
   void  process(std::queue<float>* input, std::queue<float>* output, unsigned short buffersize = 1);
+  void reset();
 
 private:
   void sum(std::queue<float>* sum_in1, std::queue<float>* sum_in2, std::queue<float>* sum_in3, std::queue<float>* sum_in4, std::queue<float>* sum_out, unsigned short buffersize = 1);

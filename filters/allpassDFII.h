@@ -10,6 +10,7 @@ public:
 
   float process(float x);
   void process(std::queue<float>* ap_in, std::queue<float>* ap_out);
+  void reset();
 
 private:
   void tick();

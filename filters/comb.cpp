@@ -54,3 +54,10 @@ void Comb::tick(){
   index++;
   index = (index % this->z);
 }//tick()
+
+void Comb::reset() {
+  index = 0;
+  for(unsigned int i = 0; i < z; i++) {
+    filterBuffer[i] = 0;
+  }
+}

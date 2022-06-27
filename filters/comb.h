@@ -11,6 +11,7 @@ public:
 
   float process(float x);
   void  process_fifo(std::queue<float>* comb_in, std::queue<float>* comb_out, unsigned short buffersize = 1);
+  void reset();
 
 private:
   void tick();

@@ -78,3 +78,14 @@ void SchrodingersReverb::fill_hyper_edge_fifos(std::queue<float>* hyper_edge_in,
     fifo_rev_comb4.push(in_hyper_edge);
   }
 }
+
+void SchrodingersReverb::reset() {
+  comb1.reset();
+  comb2.reset();
+  comb3.reset();
+  comb4.reset();
+
+  allpass1.reset();
+  allpass2.reset();
+  allpass3.reset();
+}

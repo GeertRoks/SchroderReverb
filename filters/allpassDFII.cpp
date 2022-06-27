@@ -55,3 +55,12 @@ void AllpassDFII::tick(){
   index++;
   index = (index % this->z);
 }//tick()
+
+void AllpassDFII::reset() {
+  index = 0;
+  for(unsigned int i = 0; i < z; i++) {
+    filterBuffer[i] = 0;
+  }
+  w = 0.0f;
+  y = 0.0f;
+}
