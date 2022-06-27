@@ -10,18 +10,19 @@
 class SchrodingersReverb {
 
 public:
-  SchrodingersReverb(int reverbTime);
+  SchrodingersReverb(unsigned short buffersize, int reverbTime);
   ~SchrodingersReverb();
 
   float process(float x);
-  void  process(std::queue<float>* input, std::queue<float>* output, unsigned short buffersize = 1);
+  void  process(std::queue<float>* input, std::queue<float>* output);
   void reset();
 
 private:
   void sum(std::queue<float>* sum_in1, std::queue<float>* sum_in2, std::queue<float>* sum_in3, std::queue<float>* sum_in4, std::queue<float>* sum_out, unsigned short buffersize = 1);
-  void fill_hyper_edge_fifos(std::queue<float>* hyper_edge_in, unsigned short buffersize = 1);
+  void fill_hyper_edge_fifos();
 
   int reverbTime = 0; //ms ???
+  uint16_t buffersize = 1;
 
   AllpassDFII allpass1 = AllpassDFII(125, 0.7);
   AllpassDFII allpass2 = AllpassDFII(42, 0.7);
@@ -36,13 +37,15 @@ private:
   std::queue<float> fifo_comb1_sum, fifo_comb2_sum, fifo_comb3_sum, fifo_comb4_sum;
   std::queue<float> fifo_sum_ap1, fifo_ap1_ap2, fifo_ap2_ap3, fifo_ap3_rev;
 
-  float in_hyper_edge = 0.0f;
   float sum_result = 0.0f;
 
   std::thread thread_comb1;
   std::thread thread_comb2;
   std::thread thread_comb3;
   std::thread thread_comb4;
+
+  float* buffer_in;
+  float* buffer_out;
 
 };//class
 
