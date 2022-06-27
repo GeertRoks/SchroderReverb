@@ -19,6 +19,8 @@ adc_test: adc/rpi_mcp3204_test.o $(ADC_OBJ)
 
 queue_perf_test: random_tests/queue_perf.o
 	$(CXX) -o $@ $(CXXFLAGS) $< $(LDFLAGS) $(LDLIBS)
+rev_multi_thread_test: random_tests/rev_multi_thread_speed.o $(REV_OBJ)
+	$(CXX) -o $@ $(CXXFLAGS) $< $(REV_OBJ) $(LDFLAGS) -lpthread
 
 %.o: %.cpp %.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@

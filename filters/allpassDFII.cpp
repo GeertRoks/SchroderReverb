@@ -26,11 +26,19 @@ float AllpassDFII::process(float x) {
  */
 
   //x is input (x[n]) and y is output (y[n])
-  float w = this->b0 * x + this->b1 * filterBuffer[index];
-  float y = this->a0 * w + this->a1 * filterBuffer[index];
+  w = this->b0 * x + this->b1 * filterBuffer[index];
+  y = this->a0 * w + this->a1 * filterBuffer[index];
   updateBuffer(w);
   return y;
 }//process()
+
+void AllpassDFII::process(std::queue<float>* ap_in, std::queue<float>* ap_out) {
+  w = this->b0 * ap_in->front() + this->b1 * filterBuffer[index];
+  y = this->a0 * w + this->a1 * filterBuffer[index];
+  updateBuffer(w);
+  ap_out->push(y);
+  ap_in->pop();
+}
 
 void AllpassDFII::updateBuffer(float input) {
 /*

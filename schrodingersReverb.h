@@ -1,6 +1,7 @@
 #ifndef SCHRODINGERSREVERB_H_
 #define SCHRODINGERSREVERB_H_
 
+#include <queue>
 #include "filters/allpassDFII.h"
 #include "filters/comb.h"
 
@@ -11,8 +12,10 @@ public:
   ~SchrodingersReverb();
 
   float process(float x);
+  void  process(std::queue<float>* input, std::queue<float>* output);
 
 private:
+  void sum(std::queue<float>* sum_in1, std::queue<float>* sum_in2, std::queue<float>* sum_in3, std::queue<float>* sum_in4, std::queue<float>* sum_out);
   int reverbTime = 0; //ms ???
 
   AllpassDFII allpass1 = AllpassDFII(125, 0.7);
@@ -23,6 +26,13 @@ private:
   Comb comb2 = Comb(778, 0.827);
   Comb comb3 = Comb(1011, 0.783);
   Comb comb4 = Comb(1123, 0.764);
+
+  std::queue<float> fifo_rev_comb1, fifo_rev_comb2, fifo_rev_comb3, fifo_rev_comb4;
+  std::queue<float> fifo_comb1_sum, fifo_comb2_sum, fifo_comb3_sum, fifo_comb4_sum;
+  std::queue<float> fifo_sum_ap1, fifo_ap1_ap2, fifo_ap2_ap3, fifo_ap3_rev;
+
+  float in_hyper_edge = 0.0f;
+  float sum_result = 0.0f;
 };//class
 
 #endif//SCHRODINGERSREVERB_H_

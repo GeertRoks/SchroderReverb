@@ -19,3 +19,43 @@ float SchrodingersReverb::process(float x) {
   y = allpass3.process(y);
   return y;
 }//process()
+
+void SchrodingersReverb::process(std::queue<float>* input, std::queue<float>* output) {
+  in_hyper_edge = input->front();
+  input->pop();
+
+  fifo_rev_comb1.push(in_hyper_edge);
+  fifo_rev_comb2.push(in_hyper_edge);
+  fifo_rev_comb3.push(in_hyper_edge);
+  fifo_rev_comb4.push(in_hyper_edge);
+
+  comb1.process(&fifo_rev_comb1, &fifo_comb1_sum);
+  comb2.process(&fifo_rev_comb2, &fifo_comb2_sum);
+  comb3.process(&fifo_rev_comb3, &fifo_comb3_sum);
+  comb4.process(&fifo_rev_comb4, &fifo_comb4_sum);
+
+  sum(&fifo_comb1_sum, &fifo_comb2_sum, &fifo_comb3_sum, &fifo_comb4_sum, &fifo_sum_ap1);
+
+  allpass1.process(&fifo_sum_ap1, &fifo_ap1_ap2);
+  allpass2.process(&fifo_ap1_ap2, &fifo_ap2_ap3);
+  allpass3.process(&fifo_ap2_ap3, &fifo_ap3_rev);
+
+  output->push(fifo_ap3_rev.front());
+  fifo_ap3_rev.pop();
+}
+
+void SchrodingersReverb::sum(std::queue<float>* sum_in1, std::queue<float>* sum_in2, std::queue<float>* sum_in3, std::queue<float>* sum_in4, std::queue<float>* sum_out) {
+  sum_result += sum_in1->front();
+  sum_result += sum_in2->front();
+  sum_result += sum_in3->front();
+  sum_result += sum_in4->front();
+  sum_result = sum_result/4.0f;
+  sum_out->push(sum_result);
+
+  sum_in1->pop();
+  sum_in2->pop();
+  sum_in3->pop();
+  sum_in4->pop();
+
+  sum_result = 0.0f;
+}
