@@ -13,8 +13,8 @@ this->z = z;
 }//Comb
 
 Comb::~Comb() {
-  delete filterBuffer;
   filterBuffer = nullptr;
+  delete filterBuffer;
 }//~Comb
 
 
@@ -30,11 +30,13 @@ float Comb::process(float x) {
   return y;
 }//process()
 
-void Comb::process(std::queue<float>* comb_in, std::queue<float>* comb_out) {
-  y = comb_in->front() + this->g * filterBuffer[index];
-  updateBuffer(y);
-  comb_out->push(y);
-  comb_in->pop();
+void Comb::process_fifo(std::queue<float>* comb_in, std::queue<float>* comb_out, unsigned short buffersize) {
+  for (unsigned short i = 0; i < buffersize; i++) {
+    y = comb_in->front() + this->g * filterBuffer[index];
+    updateBuffer(y);
+    comb_out->push(y);
+    comb_in->pop();
+  }
 }
 
 void Comb::updateBuffer(float input) {

@@ -10,7 +10,7 @@ public:
   virtual ~Comb ();
 
   float process(float x);
-  void  process(std::queue<float>* comb_in, std::queue<float>* comb_out );
+  void  process_fifo(std::queue<float>* comb_in, std::queue<float>* comb_out, unsigned short buffersize = 1);
 
 private:
   void tick();

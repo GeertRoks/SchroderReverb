@@ -2,5 +2,6 @@ schroederreverb
 adc_test
 queue_perf_test
 rev_multi_thread_test
-adc_test.dat
+
+*.dat
 *.o
