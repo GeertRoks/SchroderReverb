@@ -75,8 +75,14 @@ void SchrodingersReverb::sum(std::queue<float>* sum_in1, std::queue<float>* sum_
 void SchrodingersReverb::fill_hyper_edge_fifos() {
   for (int i = 0; i < buffersize; i++) {
     fifo_rev_comb1.push(buffer_in[i]);
+  }
+  for (int i = 0; i < buffersize; i++) {
     fifo_rev_comb2.push(buffer_in[i]);
+  }
+  for (int i = 0; i < buffersize; i++) {
     fifo_rev_comb3.push(buffer_in[i]);
+  }
+  for (int i = 0; i < buffersize; i++) {
     fifo_rev_comb4.push(buffer_in[i]);
   }
 }
