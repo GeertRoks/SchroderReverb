@@ -21,16 +21,27 @@ float SchrodingersReverb::process(float x) {
     y = allpass2.process(y);
     y = allpass3.process(y);
     return 0.0;
-}//process()
+}
 
-void SchrodingersReverb::process(std::queue<float>* input, std::queue<float>* output) {
+void  SchrodingersReverb::process(std::queue<float>* input, std::queue<float>* output) {
+    for (i = 0; i < buffersize; i++) {
+        buffer_in[i] = input->front();
+        input->pop();
+    }
+    for (i = 0; i < buffersize; i++) {
+        buffer_out[i] = ( comb1.process(buffer_in[i]) + comb2.process(buffer_in[i]) + comb3.process(buffer_in[i]) + comb4.process(buffer_in[i]) ) * 0.25;
+        buffer_out[i] = allpass1.process(buffer_out[i]);
+        buffer_out[i] = allpass2.process(buffer_out[i]);
+        buffer_out[i] = allpass3.process(buffer_out[i]);
+    }
+    for (i = 0; i < buffersize; i++) {
+        output->push(buffer_out[i]);
+    }
+}
 
-  for (unsigned short i = 0; i < buffersize; i++) {
-    buffer_in[i] = input->front();
-    input->pop();
-  }
+void SchrodingersReverb::process_multi(std::queue<float>* input, std::queue<float>* output) {
 
-  fill_hyper_edge_fifos();
+  fill_hyper_edge_fifos(input);
 
   thread_comb1= std::thread(&Comb::process_fifo, comb1, &fifo_rev_comb1, &fifo_comb1_sum, buffersize);
   thread_comb2= std::thread(&Comb::process_fifo, comb2, &fifo_rev_comb2, &fifo_comb2_sum, buffersize);
@@ -47,12 +58,11 @@ void SchrodingersReverb::process(std::queue<float>* input, std::queue<float>* ou
   thread_comb3.join();
   thread_comb4.join();
 
+  sum(&fifo_comb1_sum, &fifo_comb2_sum, &fifo_comb3_sum, &fifo_comb4_sum, &fifo_sum_ap1, buffersize);
   for (int i = 0; i < buffersize; i++) {
-    sum(&fifo_comb1_sum, &fifo_comb2_sum, &fifo_comb3_sum, &fifo_comb4_sum, &fifo_sum_ap1, buffersize);
-
-    allpass1.process(&fifo_sum_ap1, &fifo_ap1_ap2);
-    allpass2.process(&fifo_ap1_ap2, &fifo_ap2_ap3);
-    allpass3.process(&fifo_ap2_ap3, &fifo_ap3_rev);
+    //allpass1.process_fifo(&fifo_sum_ap1, &fifo_ap1_ap2);
+    //allpass2.process_fifo(&fifo_ap1_ap2, &fifo_ap2_ap3);
+    //allpass3.process_fifo(&fifo_ap2_ap3, &fifo_ap3_rev);
   }
   for (int i = 0; i < buffersize; i++) {
     output->push(fifo_ap3_rev.front());
@@ -61,17 +71,52 @@ void SchrodingersReverb::process(std::queue<float>* input, std::queue<float>* ou
 }
 
 void SchrodingersReverb::sum(std::queue<float>* sum_in1, std::queue<float>* sum_in2, std::queue<float>* sum_in3, std::queue<float>* sum_in4, std::queue<float>* sum_out, unsigned short buffersize) {
-  sum_result = sum_in1->front() + sum_in2->front() + sum_in3->front() + sum_in4->front();
-  sum_result = sum_result * 0.25f;
-  sum_out->push(sum_result);
+    for (unsigned short i = 0; i < buffersize; i++) {
+        sum_result = sum_in1->front() + sum_in2->front() + sum_in3->front() + sum_in4->front();
+        sum_result = sum_result * 0.25f;
+        sum_out->push(sum_result);
 
-  sum_in1->pop();
-  sum_in2->pop();
-  sum_in3->pop();
-  sum_in4->pop();
+        sum_in1->pop();
+        sum_in2->pop();
+        sum_in3->pop();
+        sum_in4->pop();
+    }
 }
 
-void SchrodingersReverb::fill_hyper_edge_fifos() {
+void SchrodingersReverb::sum() {
+  sum_result = fifo_comb1_sum.front() + fifo_comb2_sum.front() + fifo_comb3_sum.front() + fifo_comb4_sum.front();
+  sum_result = sum_result * 0.25f;
+  fifo_sum_ap1.push(sum_result);
+
+  fifo_comb1_sum.pop();
+  fifo_comb2_sum.pop();
+  fifo_comb3_sum.pop();
+  fifo_comb4_sum.pop();
+}
+
+void SchrodingersReverb::fill_hyper_edge_fifos(std::queue<float>* edge_in, std::queue<float>* edge1, std::queue<float>* edge2, std::queue<float>* edge3, std::queue<float>* edge4, unsigned short buffersize) {
+  for (unsigned short i = 0; i < buffersize; i++) {
+    buffer_in[i] = edge_in->front();
+    edge_in->pop();
+  }
+  for (int i = 0; i < buffersize; i++) {
+    edge1->push(buffer_in[i]);
+  }
+  for (int i = 0; i < buffersize; i++) {
+    edge2->push(buffer_in[i]);
+  }
+  for (int i = 0; i < buffersize; i++) {
+    edge3->push(buffer_in[i]);
+  }
+  for (int i = 0; i < buffersize; i++) {
+    edge4->push(buffer_in[i]);
+  }
+}
+void SchrodingersReverb::fill_hyper_edge_fifos(std::queue<float>* input) {
+  for (unsigned short i = 0; i < buffersize; i++) {
+    buffer_in[i] = input->front();
+    input->pop();
+  }
   for (int i = 0; i < buffersize; i++) {
     fifo_rev_comb1.push(buffer_in[i]);
   }

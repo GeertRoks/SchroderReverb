@@ -1,4 +1,4 @@
-CXXFLAGS := -Wall -std=c++11
+CXXFLAGS := -Wall -std=c++11 -g
 LDFLAGS =
 LDLIBS = -lpthread -lbcm2835 -lm
 PROGRAM_NAME = schroederreverb
@@ -9,9 +9,9 @@ REV_OBJ = schrodingersReverb.o filters/allpassDFII.o filters/comb.o
 OBJ = main.o
 OBJ += $(REV_OBJ) $(ADC_OBJ)
 
-all: test
+all: $(PROGRAM_NAME)
 
-test: $(OBJ)
+$(PROGRAM_NAME): $(OBJ)
 	$(CXX) -o $@ $(CXXFLAGS) $(OBJ) $(LDFLAGS) $(LDLIBS)
 
 adc_test: adc/rpi_mcp3204_test.o $(ADC_OBJ)
@@ -19,14 +19,21 @@ adc_test: adc/rpi_mcp3204_test.o $(ADC_OBJ)
 
 queue_perf_test: random_tests/queue_perf.o
 	$(CXX) -o $@ $(CXXFLAGS) $< $(LDFLAGS) $(LDLIBS)
+
 rev_multi_thread_test: random_tests/rev_multi_thread_speed.o $(REV_OBJ)
 	$(CXX) -o $@ $(CXXFLAGS) $< $(REV_OBJ) $(LDFLAGS) -lpthread
 
-comb_perf_test: random_tests/comb_perf.o $(REV_OBJ)
-	$(CXX) -o $@ $(CXXFLAGS) $< $(REV_OBJ) $(LDFLAGS) $(LDLIBS)
+comb_perf_test: random_tests/comb_perf.o filters/comb.o
+	$(CXX) -o $@ $(CXXFLAGS) filters/comb.o $< $(LDFLAGS) $(LDLIBS)
 
-allpass_perf_test: random_tests/allpass_perf.o $(REV_OBJ)
-	$(CXX) -o $@ $(CXXFLAGS) $< $(REV_OBJ) $(LDFLAGS) $(LDLIBS)
+allpass_perf_test: random_tests/allpass_perf.o filters/allpassDFII.o
+	$(CXX) -o $@ $(CXXFLAGS) filters/allpassDFII.o $< $(LDFLAGS) $(LDLIBS)
+
+sum_perf_test: random_tests/sum_perf_test.o $(REV_OBJ)
+	$(CXX) -o $@ $(CXXFLAGS) $(REV_OBJ) $< $(LDFLAGS) $(LDLIBS)
+
+single_task_perf_test: random_tests/single_task_perf_test.o $(REV_OBJ)
+	$(CXX) -o $@ $(CXXFLAGS) $(REV_OBJ) $< $(LDFLAGS) $(LDLIBS)
 
 %.o: %.cpp %.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@

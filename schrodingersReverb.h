@@ -16,11 +16,14 @@ public:
 
   float process(float x);
   void  process(std::queue<float>* input, std::queue<float>* output);
+  void  process_multi(std::queue<float>* input, std::queue<float>* output);
   void reset();
 
-private:
   void sum(std::queue<float>* sum_in1, std::queue<float>* sum_in2, std::queue<float>* sum_in3, std::queue<float>* sum_in4, std::queue<float>* sum_out, unsigned short buffersize = 1);
-  void fill_hyper_edge_fifos();
+void fill_hyper_edge_fifos(std::queue<float>* edge_in, std::queue<float>* edge1, std::queue<float>* edge2, std::queue<float>* edge3, std::queue<float>* edge4, unsigned short buffersize = 1);
+private:
+  void fill_hyper_edge_fifos(std::queue<float>* input);
+  void sum();
 
   int reverbTime = 0; //ms ???
   uint16_t buffersize = 1;
@@ -38,7 +41,7 @@ private:
   std::queue<float> fifo_comb1_sum, fifo_comb2_sum, fifo_comb3_sum, fifo_comb4_sum;
   std::queue<float> fifo_sum_ap1, fifo_ap1_ap2, fifo_ap2_ap3, fifo_ap3_rev;
 
-  float sum_result = 0.0f;
+  float sum_result, y = 0.0f;
 
   std::thread thread_comb1;
   std::thread thread_comb2;
@@ -47,6 +50,7 @@ private:
 
   float* buffer_in;
   float* buffer_out;
+  unsigned short i = 0;
 
 };//class
 

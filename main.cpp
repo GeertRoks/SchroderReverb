@@ -10,7 +10,7 @@
 int main() {
     const std::size_t buffersize = 64;
     TaskAudioIO<buffersize> audio_io;
-    SchrodingersReverb reverb(0);
+    SchrodingersReverb reverb(buffersize, 0);
 
     // FIFOs: naming convention: fifo_<source>_<sink>
     std::queue<float> fifo_adc_reverb;

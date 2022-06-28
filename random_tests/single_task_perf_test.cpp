@@ -3,11 +3,10 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../filters/allpassDFII.h"
+#include "../schrodingersReverb.h"
 
 int main(int argc, char* argv[])
 {
-    AllpassDFII allpass(347, 0.70);
 
     std::chrono::time_point<std::chrono::steady_clock> start;
     std::chrono::time_point<std::chrono::steady_clock> stop;
@@ -35,13 +34,15 @@ int main(int argc, char* argv[])
         std::cout << "no buffer size given. Usage: " << argv[0] << " <int buffersize>" << std::endl;
         return 1;
     }
+    SchrodingersReverb reverb(buffersize, 0);
 
-    std::cout << "AllpassDFII perf Test: Using loop_amount: " << loop_amount << std::endl;
+    std::cout << "Sum perf Test: Using loop_amount: " << loop_amount << std::endl;
 
     while (count > 0) {
         start = std::chrono::steady_clock::now();
-        allpass.process_fifo(&input, &input, buffersize);
+        reverb.process(&input, &input);
         stop = std::chrono::steady_clock::now();
+
         duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop-start);
 
         push_avg += duration.count();
@@ -51,6 +52,7 @@ int main(int argc, char* argv[])
         if (duration.count() < push_min) {
             push_min = duration.count();
         }
+
 
         count --;
     }

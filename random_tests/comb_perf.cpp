@@ -13,16 +13,20 @@ int main(int argc, char* argv[])
     std::chrono::time_point<std::chrono::steady_clock> stop;
 	std::chrono::nanoseconds duration;
 
-
-    float x = 1.0f;
-    float res = 0.0f;
     const int loop_amount = 100000;
     int count = loop_amount;
     unsigned short buffersize = 1;
 
-    unsigned int push_avg = 0;
+    unsigned long long int push_avg = 0;
     unsigned int push_max = 0;
     unsigned int push_min = 0 - 1;
+
+    std::queue<float> input, output;
+
+    input.push(1.0f);
+    for (int i = 1; i<128; i++) {
+        input.push(0.0f);
+    }
 
     if (argc > 1) {
         buffersize = atoi(argv[1]);
@@ -36,9 +40,8 @@ int main(int argc, char* argv[])
 
     while (count > 0) {
         start = std::chrono::steady_clock::now();
-        comb.process(x, &res);
+        comb.process_fifo(&input, &input, buffersize);
         stop = std::chrono::steady_clock::now();
-        x = sin(count);
         duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop-start);
 
         push_avg += duration.count();
@@ -51,7 +54,8 @@ int main(int argc, char* argv[])
 
         count --;
     }
-    std::cout << "Average runtime duration: " << push_avg/loop_amount  << std::endl;
-    std::cout << "min runtime: " << push_min << " ns, max runtime: " << push_max << " ns" << std::endl;
+    std::cout << "avg runtime: " << push_avg/loop_amount << " ns, per sample: " << push_avg/(loop_amount*buffersize) << " ns" << std::endl;
+    std::cout << "min runtime: " << push_min << " ns, per sample: " << push_min/buffersize << "ns" << std::endl;
+    std::cout << "max runtime: " << push_max << " ns, per sample: " << push_max/buffersize << " ns" << std::endl;
     return 0;
 }
