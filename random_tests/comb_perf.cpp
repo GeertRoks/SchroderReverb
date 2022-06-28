@@ -1,10 +1,11 @@
 #include <iostream>
 #include <chrono>
 #include <math.h>
+#include <stdlib.h>
 
 #include "../filters/comb.h"
 
-int main()
+int main(int argc, char* argv[])
 {
     Comb comb(1678, 0.77);
 
@@ -12,14 +13,24 @@ int main()
     std::chrono::time_point<std::chrono::steady_clock> stop;
 	std::chrono::nanoseconds duration;
 
+
     float x = 1.0f;
     float res = 0.0f;
     const int loop_amount = 100000;
     int count = loop_amount;
+    unsigned short buffersize = 1;
 
     unsigned int push_avg = 0;
     unsigned int push_max = 0;
     unsigned int push_min = 0 - 1;
+
+    if (argc > 1) {
+        buffersize = atoi(argv[1]);
+        std::cout << "buffersize set to: " << buffersize << std::endl;
+    } else {
+        std::cout << "no buffer size given. Usage: " << argv[0] << " <int buffersize>" << std::endl;
+        return 1;
+    }
 
     std::cout << "Comb perf Test: Using loop_amount: " << loop_amount << std::endl;
 
