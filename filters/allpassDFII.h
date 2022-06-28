@@ -1,6 +1,7 @@
 #ifndef ALLPASSDFII_H
 #define ALLPASSDFII_H
 
+#include <queue>
 
 class AllpassDFII {
 public:
@@ -8,12 +9,15 @@ public:
   virtual ~AllpassDFII ();
 
   float process(float x);
+  void process(std::queue<float>* ap_in, std::queue<float>* ap_out);
+  void reset();
 
 private:
   void tick();
   void updateBuffer(float x);
 
   double a0, a1, b0, b1 = 0;  //filtercoefficents
+  float w, y = 0.0f;          //intermediate results
   unsigned int z = 0;         //amount of delay samples
 
   float *filterBuffer;
