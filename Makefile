@@ -1,6 +1,6 @@
 CXXFLAGS := -Wall -std=c++11
 LDFLAGS =
-LDLIBS = -lpthread -lbcm2835
+LDLIBS = -lpthread -lbcm2835 -lm
 PROGRAM_NAME = schroederreverb
 
 
@@ -20,11 +20,11 @@ adc_test: adc/rpi_mcp3204_test.o $(ADC_OBJ)
 queue_perf_test: random_tests/queue_perf.o
 	$(CXX) -o $@ $(CXXFLAGS) $< $(LDFLAGS) $(LDLIBS)
 
-comb_perf_test: random_tests/comb_perf.o
-	$(CXX) -o $@ $(CXXFLAGS) $< $(LDFLAGS) $(LDLIBS)
+comb_perf_test: random_tests/comb_perf.o $(REV_OBJ)
+	$(CXX) -o $@ $(CXXFLAGS) $< $(REV_OBJ) $(LDFLAGS) $(LDLIBS)
 
-allpass_perf_test: random_tests/allpass_perf.o
-	$(CXX) -o $@ $(CXXFLAGS) $< $(LDFLAGS) $(LDLIBS)
+allpass_perf_test: random_tests/allpass_perf.o $(REV_OBJ)
+	$(CXX) -o $@ $(CXXFLAGS) $< $(REV_OBJ) $(LDFLAGS) $(LDLIBS)
 
 %.o: %.cpp %.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@

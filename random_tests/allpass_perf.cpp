@@ -1,6 +1,8 @@
 #include <iostream>
-#include "allpassDFII.h"
 #include <chrono>
+#include <math.h>
+
+#include "../filters/allpassDFII.h"
 
 int main()
 {
@@ -14,13 +16,17 @@ int main()
     const int loop_amount = 100000;
     int count = loop_amount;
 
+    unsigned int push_avg = 0;
+    unsigned int push_max = 0;
+    unsigned int push_min = 0 - 1;
+
     std::cout << "AllpassDFII perf Test: Using loop_amount: " << loop_amount << std::endl;
 
     while (count > 0) {
         start = std::chrono::steady_clock::now();
         allpass.process(x);
         stop = std::chrono::steady_clock::now();
-        x += 0.0001 * count;
+        x = sin(count);
         duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop-start);
 
         push_avg += duration.count();
