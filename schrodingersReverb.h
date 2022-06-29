@@ -2,7 +2,6 @@
 #define SCHRODINGERSREVERB_H_
 
 #include <iostream>
-#include <queue>
 #include <thread>
 
 #include "filters/allpassDFII.h"
@@ -16,18 +15,18 @@ public:
 
   float process(float x);
   void  process_single_task(float* input, float* output);
-  void  process_multi_task(std::queue<float>* input, std::queue<float>* output);
+  void  process_multi_task(float* input, float* output);
   void reset();
 
-  void sum(std::queue<float>* sum_in1, std::queue<float>* sum_in2, std::queue<float>* sum_in3, std::queue<float>* sum_in4, std::queue<float>* sum_out, unsigned short buffersize = 1);
-  void fill_hyper_edge_fifos(std::queue<float>* edge_in, std::queue<float>* edge1, std::queue<float>* edge2, std::queue<float>* edge3, std::queue<float>* edge4, std::queue<float>* dry, unsigned short buffersize = 1);
+  void sum(float* sum_in1, float* sum_in2, float* sum_in3, float* sum_in4, float* sum_out, unsigned short buffersize = 1);
+  void fill_hyper_edge_fifos(float* edge_in, float* edge1, float* edge2, float* edge3, float* edge4, float* dry, unsigned short buffersize = 1);
 
 
-  void drywetmix(std::queue<float>* dry_in, std::queue<float>* wet_in, std::queue<float>* out, unsigned short buffersize);
+  void drywetmix(float* dry_in, float* wet_in, float* mix_out, unsigned short buffersize);
   void setDryWetMix(float mix);
 
 private:
-  void fill_hyper_edge_fifos_intern(std::queue<float>* input);
+  void fill_hyper_edge_fifos_intern(float* input);
   void sum_intern();
 
   int reverbTime = 0; //ms ???
@@ -42,11 +41,23 @@ private:
   Comb comb3 = Comb(1011, 0.783);
   Comb comb4 = Comb(1123, 0.764);
 
-  std::queue<float> fifo_rev_comb1, fifo_rev_comb2, fifo_rev_comb3, fifo_rev_comb4, fifo_rev_dry;
-  std::queue<float> fifo_comb1_sum, fifo_comb2_sum, fifo_comb3_sum, fifo_comb4_sum;
-  std::queue<float> fifo_sum_ap1, fifo_ap1_ap2, fifo_ap2_ap3, fifo_ap3_wet;
+  float* buffer_intern_single_task;
 
-  float sum_result, y = 0.0f;
+  float* fifo_rev_comb1;
+  float* fifo_rev_comb2;
+  float* fifo_rev_comb3;
+  float* fifo_rev_comb4;
+  float* fifo_rev_dry;
+  float* fifo_comb1_sum;
+  float* fifo_comb2_sum;
+  float* fifo_comb3_sum;
+  float* fifo_comb4_sum;
+  float* fifo_sum_ap1;
+  float* fifo_ap1_ap2;
+  float* fifo_ap2_ap3;
+  float* fifo_ap3_wet;
+
+  float y = 0.0f;
 
   std::thread thread_hyper_edge;
   std::thread thread_comb1;
@@ -58,12 +69,6 @@ private:
   std::thread thread_allpass2;
   std::thread thread_allpass3;
 
-  float* buffer_in;
-  float* buffer_sum;
-  float* buffer_dry;
-  float* buffer_wet;
-  float* buffer_mix;
-  float* buffer_out;
   unsigned short i = 0;
 
   float dry_wet_mix = 0.9f; //percentage of wet sound

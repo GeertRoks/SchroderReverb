@@ -1,8 +1,6 @@
 #ifndef COMB_H
 #define COMB_H
 
-#include <queue>
-
 class Comb {
 public:
   Comb ();
@@ -11,7 +9,7 @@ public:
 
   float process(float x);
   void process(float x, float* result);
-  void  process_fifo(std::queue<float>* comb_in, std::queue<float>* comb_out, unsigned short buffersize = 1);
+  void  process_fifo(float* comb_in, float* comb_out, unsigned short buffersize = 1);
   void reset();
 
 private:

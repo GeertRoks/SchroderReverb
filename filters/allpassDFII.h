@@ -1,16 +1,13 @@
 #ifndef ALLPASSDFII_H
 #define ALLPASSDFII_H
 
-#include <queue>
-
 class AllpassDFII {
 public:
   AllpassDFII (unsigned int z, double a0);
   virtual ~AllpassDFII ();
 
   float process(float x);
-  //void process_fifo(std::queue<float>* ap_in, std::queue<float>* ap_out);
-  void process_fifo(std::queue<float>* ap_in, std::queue<float>* ap_out, unsigned short buffersize);
+  void process_fifo(float* ap_in, float* ap_out, unsigned short buffersize);
   void reset();
 
 private:

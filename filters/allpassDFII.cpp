@@ -8,11 +8,11 @@ AllpassDFII::AllpassDFII(unsigned int z, double a0) {
     filterBuffer[i] = 0;
   }//for
 
-this->a0 = a0;
-this->a1 = -1;
-this->b0 = 1;
-this->b1 = a0;
-this->z = z;
+  this->a0 = a0;
+  this->a1 = -1;
+  this->b0 = 1;
+  this->b1 = a0;
+  this->z = z;
 }//AllpassDFII
 
 AllpassDFII::~AllpassDFII() {
@@ -20,15 +20,15 @@ AllpassDFII::~AllpassDFII() {
   filterBuffer = nullptr;
 }//~AllpassDFII
 
-void AllpassDFII::process_fifo(std::queue<float>* ap_in, std::queue<float>* ap_out, unsigned short buffersize) {
+void AllpassDFII::process_fifo(float* ap_in, float* ap_out, unsigned short buffersize) {
     for (unsigned int i = 0; i < buffersize; i++) {
-        w = this->b0 * ap_in->front() + this->b1 * filterBuffer[index];
+        w = this->b0 * ap_in[i] + this->b1 * filterBuffer[index];
         y = this->a0 * w + this->a1 * filterBuffer[index];
         updateBuffer(w);
-        ap_out->push(y);
-        ap_in->pop();
+        ap_out[i] = y;
     }
 }
+
 float AllpassDFII::process(float x) {
 /*
  *  Calculates the filtered sample
@@ -41,13 +41,6 @@ float AllpassDFII::process(float x) {
   return y;
 }//process()
 
-//void AllpassDFII::process_fifo(std::queue<float>* ap_in, std::queue<float>* ap_out) {
-//  w = this->b0 * ap_in->front() + this->b1 * filterBuffer[index];
-//  y = this->a0 * w + this->a1 * filterBuffer[index];
-//  updateBuffer(w);
-//  ap_out->push(y);
-//  ap_in->pop();
-//}
 
 void AllpassDFII::updateBuffer(float input) {
 /*

@@ -34,12 +34,11 @@ void Comb::process(float x, float* result) {
   *result = y;
 }//process()
 
-void Comb::process_fifo(std::queue<float>* comb_in, std::queue<float>* comb_out, unsigned short buffersize) {
+void Comb::process_fifo(float* comb_in, float* comb_out, unsigned short buffersize) {
   for (unsigned short i = 0; i < buffersize; i++) {
-    y = comb_in->front() + this->g * filterBuffer[index];
+    y = comb_in[i] + this->g * filterBuffer[index];
     updateBuffer(y);
-    comb_out->push(y);
-    comb_in->pop();
+    comb_out[i] = y;
   }
 }
 
