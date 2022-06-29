@@ -7,27 +7,7 @@
 
 int main(int argc, char* argv[])
 {
-    AllpassDFII allpass(347, 0.70);
-
-    std::chrono::time_point<std::chrono::steady_clock> start;
-    std::chrono::time_point<std::chrono::steady_clock> stop;
-	std::chrono::nanoseconds duration;
-
-    const int loop_amount = 100000;
-    int count = loop_amount;
     unsigned short buffersize = 1;
-
-    unsigned long long int push_avg = 0;
-    unsigned int push_max = 0;
-    unsigned int push_min = 0 - 1;
-
-    std::queue<float> input, output;
-
-    input.push(1.0f);
-    for (int i = 1; i<128; i++) {
-        input.push(0.0f);
-    }
-
     if (argc > 1) {
         buffersize = atoi(argv[1]);
         std::cout << "buffersize set to: " << buffersize << std::endl;
@@ -36,12 +16,34 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    AllpassDFII allpass(347, 0.70);
+
+    std::chrono::time_point<std::chrono::steady_clock> start;
+    std::chrono::time_point<std::chrono::steady_clock> stop;
+	std::chrono::nanoseconds duration;
+
+    const int loop_amount = 100000;
+    int count = loop_amount;
+
+    unsigned long long int push_avg = 0;
+    unsigned int push_max = 0;
+    unsigned int push_min = 0 - 1;
+
+    float input[buffersize] = {};
+    float output[buffersize] = {};
+
+    input[0] = 1.0f;
+    for (int i = 1; i<buffersize; i++) {
+        input[i] = 0.0f;
+    }
+
     std::cout << "AllpassDFII perf Test: Using loop_amount: " << loop_amount << std::endl;
 
     while (count > 0) {
         start = std::chrono::steady_clock::now();
-        allpass.process_fifo(&input, &input, buffersize);
+        allpass.process_fifo(input, output, buffersize);
         stop = std::chrono::steady_clock::now();
+
         duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop-start);
 
         push_avg += duration.count();

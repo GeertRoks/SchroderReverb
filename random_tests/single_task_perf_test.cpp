@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
         input[i] = 0.0f;
     }
 
-    std::cout << "Sum perf Test: Using loop_amount: " << loop_amount << std::endl;
+    std::cout << "Single task perf Test: Using loop_amount: " << loop_amount << std::endl;
 
     while (count > 0) {
         start = std::chrono::steady_clock::now();
