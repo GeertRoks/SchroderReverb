@@ -15,7 +15,7 @@ public:
   ~SchrodingersReverb();
 
   float process(float x);
-  void  process_single_task(std::queue<float>* input, std::queue<float>* output);
+  void  process_single_task(float* input, float* output);
   void  process_multi_task(std::queue<float>* input, std::queue<float>* output);
   void reset();
 

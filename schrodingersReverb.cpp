@@ -27,22 +27,15 @@ float SchrodingersReverb::process(float x) {
     return 0.0;
 }
 
-void  SchrodingersReverb::process_single_task(std::queue<float>* input, std::queue<float>* output) {
+void  SchrodingersReverb::process_single_task(float* input, float* output) {
     for (i = 0; i < buffersize; i++) {
-        buffer_in[i] = input->front();
-        input->pop();
-    }
-    for (i = 0; i < buffersize; i++) {
-        buffer_sum[i] = ( comb1.process(buffer_in[i]) + comb2.process(buffer_in[i]) + comb3.process(buffer_in[i]) + comb4.process(buffer_in[i]) ) * 0.25;
+        buffer_sum[i] = ( comb1.process(input[i]) + comb2.process(input[i]) + comb3.process(input[i]) + comb4.process(input[i]) ) * 0.25;
         buffer_out[i] = allpass1.process(buffer_sum[i]);
         buffer_out[i] = allpass2.process(buffer_out[i]);
         buffer_out[i] = allpass3.process(buffer_out[i]);
     }
     for (i = 0; i < buffersize; i++) {
-        buffer_out[i] = (dry_wet_mix * buffer_out[i]) + ((1.0f - dry_wet_mix) * buffer_in[i]);
-    }
-    for (i = 0; i < buffersize; i++) {
-        output->push(buffer_out[i]);
+        output[i] = (dry_wet_mix * buffer_out[i]) + ((1.0f - dry_wet_mix) * buffer_in[i]);
     }
 }
 
