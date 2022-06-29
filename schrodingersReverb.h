@@ -15,15 +15,19 @@ public:
   ~SchrodingersReverb();
 
   float process(float x);
-  void  process(std::queue<float>* input, std::queue<float>* output);
+  void  process_single_task(std::queue<float>* input, std::queue<float>* output);
   void  process_multi(std::queue<float>* input, std::queue<float>* output);
   void reset();
 
   void sum(std::queue<float>* sum_in1, std::queue<float>* sum_in2, std::queue<float>* sum_in3, std::queue<float>* sum_in4, std::queue<float>* sum_out, unsigned short buffersize = 1);
-void fill_hyper_edge_fifos(std::queue<float>* edge_in, std::queue<float>* edge1, std::queue<float>* edge2, std::queue<float>* edge3, std::queue<float>* edge4, unsigned short buffersize = 1);
+  void fill_hyper_edge_fifos(std::queue<float>* edge_in, std::queue<float>* edge1, std::queue<float>* edge2, std::queue<float>* edge3, std::queue<float>* edge4, unsigned short buffersize = 1);
+
+
+  void setDryWetMix(float mix);
+
 private:
-  void fill_hyper_edge_fifos(std::queue<float>* input);
-  void sum();
+  void fill_hyper_edge_fifos_intern(std::queue<float>* input);
+  void sum_intern();
 
   int reverbTime = 0; //ms ???
   uint16_t buffersize = 1;
@@ -43,14 +47,22 @@ private:
 
   float sum_result, y = 0.0f;
 
+  std::thread thread_hyper_edge;
   std::thread thread_comb1;
   std::thread thread_comb2;
   std::thread thread_comb3;
   std::thread thread_comb4;
+  std::thread thread_sum;
+  std::thread thread_allpass1;
+  std::thread thread_allpass2;
+  std::thread thread_allpass3;
 
   float* buffer_in;
+  float* buffer_sum;
   float* buffer_out;
   unsigned short i = 0;
+
+  float dry_wet_mix = 0.9f; //percentage of wet sound
 
 };//class
 

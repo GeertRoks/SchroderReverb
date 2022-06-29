@@ -6,7 +6,7 @@ PROGRAM_NAME = schroederreverb
 
 ADC_OBJ = adc/task_audio_io.o adc/MCP3204_BCM2835/MCP3204_BCM2835.o
 REV_OBJ = schrodingersReverb.o filters/allpassDFII.o filters/comb.o
-OBJ = main.o
+OBJ = single_task_main.o
 OBJ += $(REV_OBJ) $(ADC_OBJ)
 
 all: $(PROGRAM_NAME)
