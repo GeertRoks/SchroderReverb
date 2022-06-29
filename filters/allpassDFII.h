@@ -9,7 +9,7 @@ public:
   virtual ~AllpassDFII ();
 
   float process(float x);
-  void process_fifo(std::queue<float>* ap_in, std::queue<float>* ap_out);
+  //void process_fifo(std::queue<float>* ap_in, std::queue<float>* ap_out);
   void process_fifo(std::queue<float>* ap_in, std::queue<float>* ap_out, unsigned short buffersize);
   void reset();
 

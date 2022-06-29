@@ -3,15 +3,24 @@
 #include <queue>
 #include <chrono>
 #include <random>
+#include <stdlib.h>
 
 #include "../schrodingersReverb.h"
 
-int main() {
+int main(int argc, char* argv[]){
+  unsigned short buffersize = 128;
+  if (argc > 1) {
+      buffersize = atoi(argv[1]);
+      std::cout << "buffersize set to: " << buffersize << std::endl;
+  } else {
+      std::cout << "no buffer size given. Usage: " << argv[0] << " <int buffersize>" << std::endl;
+      return 1;
+  }
   std::ofstream o, s;
   o.open("./random_tests/rev_multi_thread_test.dat");
 
-  unsigned short buffersize = 128;
   SchrodingersReverb reverb(buffersize,0);
+  reverb.setDryWetMix(1.0f);
   std::queue<float> input, output_m, output_s;
 
   input.push(1.0f);
@@ -22,7 +31,9 @@ int main() {
   std::chrono::time_point<std::chrono::steady_clock> start, stop;
 
   start = std::chrono::steady_clock::now();
-  reverb.process_multi_task(&input, &output_m);
+  std::thread reverb_task(&SchrodingersReverb::process_multi_task, &reverb, &input, &output_m);
+  reverb_task.join();
+  //reverb.process_multi_task(&input, &output_m);
   stop = std::chrono::steady_clock::now();
 
   auto duration_m = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
@@ -34,7 +45,7 @@ int main() {
   std::cout << ", per sample: " << duration_m.count()/buffersize << " ns" << std::endl;
 
   while (!output_m.empty()) {
-    //std::cout << "sample: " << adc_output.front() << std::endl;
+    //std::cout << "sample: " << output_m.front() << std::endl;
     o << output_m.front() << std::endl;
     output_m.pop();
   }

@@ -42,14 +42,15 @@ int main() {
     std::thread user_input_task;
 
     std::thread audio_task(&TaskAudioIO<buffersize>::run, audio_io, &fifo_adc_reverb, &fifo_reverb_dac);
-    //user_input_task = std::thread(&user_input, &reverb);
+    user_input_task = std::thread(&user_input, &reverb);
 
     std::cout << "Schroeder Reverb is running..." << std::endl;
     while (1) {
         if (fifo_adc_reverb.size() > buffersize) {
-            std::thread reverb_task(&SchrodingersReverb::process_multi_task, &reverb, &fifo_adc_reverb, &fifo_reverb_dac);
-            reverb_task.join();
-            std::cout << "fifo_adc_rev: " << fifo_adc_reverb.size() << ", fifo_rev_dac: " << fifo_reverb_dac.size() << std::endl;
+            //std::thread reverb_task(&SchrodingersReverb::process_multi_task, &reverb, &fifo_adc_reverb, &fifo_reverb_dac);
+            //reverb_task.join();
+            reverb.process_multi_task(&fifo_adc_reverb, &fifo_reverb_dac);
+            //std::cout << "fifo_adc_rev: " << fifo_adc_reverb.size() << ", fifo_rev_dac: " << fifo_reverb_dac.size() << std::endl;
         }
         if (ui_done) {
             user_input_task.join();

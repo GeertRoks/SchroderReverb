@@ -20,9 +20,10 @@ public:
   void reset();
 
   void sum(std::queue<float>* sum_in1, std::queue<float>* sum_in2, std::queue<float>* sum_in3, std::queue<float>* sum_in4, std::queue<float>* sum_out, unsigned short buffersize = 1);
-  void fill_hyper_edge_fifos(std::queue<float>* edge_in, std::queue<float>* edge1, std::queue<float>* edge2, std::queue<float>* edge3, std::queue<float>* edge4, unsigned short buffersize = 1);
+  void fill_hyper_edge_fifos(std::queue<float>* edge_in, std::queue<float>* edge1, std::queue<float>* edge2, std::queue<float>* edge3, std::queue<float>* edge4, std::queue<float>* dry, unsigned short buffersize = 1);
 
 
+  void drywetmix(std::queue<float>* dry_in, std::queue<float>* wet_in, std::queue<float>* out, unsigned short buffersize);
   void setDryWetMix(float mix);
 
 private:
@@ -41,9 +42,9 @@ private:
   Comb comb3 = Comb(1011, 0.783);
   Comb comb4 = Comb(1123, 0.764);
 
-  std::queue<float> fifo_rev_comb1, fifo_rev_comb2, fifo_rev_comb3, fifo_rev_comb4;
+  std::queue<float> fifo_rev_comb1, fifo_rev_comb2, fifo_rev_comb3, fifo_rev_comb4, fifo_rev_dry;
   std::queue<float> fifo_comb1_sum, fifo_comb2_sum, fifo_comb3_sum, fifo_comb4_sum;
-  std::queue<float> fifo_sum_ap1, fifo_ap1_ap2, fifo_ap2_ap3, fifo_ap3_rev;
+  std::queue<float> fifo_sum_ap1, fifo_ap1_ap2, fifo_ap2_ap3, fifo_ap3_wet;
 
   float sum_result, y = 0.0f;
 
@@ -59,6 +60,9 @@ private:
 
   float* buffer_in;
   float* buffer_sum;
+  float* buffer_dry;
+  float* buffer_wet;
+  float* buffer_mix;
   float* buffer_out;
   unsigned short i = 0;
 

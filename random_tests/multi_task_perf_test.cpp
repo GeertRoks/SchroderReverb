@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 
     while (count > 0) {
         start = std::chrono::steady_clock::now();
-        reverb.process_single_task(&input, &input);
+        reverb.process_multi_task(&input, &input);
         stop = std::chrono::steady_clock::now();
 
         duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop-start);
@@ -61,3 +61,4 @@ int main(int argc, char* argv[])
     std::cout << "max runtime: " << push_max << " ns, per sample: " << push_max/buffersize << " ns" << std::endl;
     return 0;
 }
+
