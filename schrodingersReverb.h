@@ -16,7 +16,7 @@ public:
 
   float process(float x);
   void  process_single_task(std::queue<float>* input, std::queue<float>* output);
-  void  process_multi(std::queue<float>* input, std::queue<float>* output);
+  void  process_multi_task(std::queue<float>* input, std::queue<float>* output);
   void reset();
 
   void sum(std::queue<float>* sum_in1, std::queue<float>* sum_in2, std::queue<float>* sum_in3, std::queue<float>* sum_in4, std::queue<float>* sum_out, unsigned short buffersize = 1);

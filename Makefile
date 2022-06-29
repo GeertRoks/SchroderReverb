@@ -9,7 +9,13 @@ REV_OBJ = schrodingersReverb.o filters/allpassDFII.o filters/comb.o
 OBJ = single_task_main.o
 OBJ += $(REV_OBJ) $(ADC_OBJ)
 
-all: $(PROGRAM_NAME)
+all: reverb_single_task reverb_multi_task
+
+reverb_single_task: single_task_main.o $(REV_OBJ) $(ADC_OBJ)
+	$(CXX) -o $@ $(CXXFLAGS) single_task_main.o $(REV_OBJ) $(ADC_OBJ) $(LDFLAGS) $(LDLIBS)
+
+reverb_multi_task: multi_task_main.o $(REV_OBJ) $(ADC_OBJ)
+	$(CXX) -o $@ $(CXXFLAGS) multi_task_main.o $(REV_OBJ) $(ADC_OBJ) $(LDFLAGS) $(LDLIBS)
 
 $(PROGRAM_NAME): $(OBJ)
 	$(CXX) -o $@ $(CXXFLAGS) $(OBJ) $(LDFLAGS) $(LDLIBS)

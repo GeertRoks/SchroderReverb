@@ -43,10 +43,10 @@ void  SchrodingersReverb::process_single_task(std::queue<float>* input, std::que
     }
 }
 
-void SchrodingersReverb::process_multi(std::queue<float>* input, std::queue<float>* output) {
+void SchrodingersReverb::process_multi_task(std::queue<float>* input, std::queue<float>* output) {
 
-  //thread_hyper_edge = std::thread(&SchrodingersReverb::fill_hyper_edge_fifos, input, &fifo_rev_comb1, &fifo_rev_comb2, &fifo_rev_comb3, &fifo_rev_comb4, &buffersize);
-  //thread_hyper_edge.join();
+  thread_hyper_edge = std::thread(&SchrodingersReverb::fill_hyper_edge_fifos, this, input, &fifo_rev_comb1, &fifo_rev_comb2, &fifo_rev_comb3, &fifo_rev_comb4, buffersize);
+  thread_hyper_edge.join();
 
   thread_comb1= std::thread(&Comb::process_fifo, comb1, &fifo_rev_comb1, &fifo_comb1_sum, buffersize);
   thread_comb2= std::thread(&Comb::process_fifo, comb2, &fifo_rev_comb2, &fifo_comb2_sum, buffersize);

@@ -1,4 +1,6 @@
 schroederreverb
+reverb_multi_task
+reverb_single_task
 *_test
 
 *.dat
