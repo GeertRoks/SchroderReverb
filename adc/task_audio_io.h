@@ -4,7 +4,7 @@
 
 #include <chrono>
 #include <thread>
-#include <queue>
+#include <iostream>
 #include <bcm2835.h>
 
 #include "MCP3204_BCM2835/MCP3204_BCM2835.h"
@@ -16,8 +16,8 @@ class TaskAudioIO {
         TaskAudioIO(int period_us);
         ~TaskAudioIO();
 
-        void run(std::queue<float>* fifo_adc_out, std::queue<float>* fifo_dac_in);
-        void run_debug(std::queue<int>* fifo_adc_out, std::queue<int>* fifo_dac_in, std::chrono::nanoseconds* duration, int counter); //debug variant
+        void run(float* fifo_adc_out, float* fifo_dac_in);
+        void run_debug(float* fifo_adc_out, float* fifo_dac_in, std::chrono::nanoseconds* duration, int counter); //debug variant
 
     private:
         void pwm_init();

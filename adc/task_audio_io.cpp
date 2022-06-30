@@ -1,5 +1,4 @@
 #include "task_audio_io.h"
-#include <iostream>
 
 template<std::size_t buffersize>
 TaskAudioIO<buffersize>::TaskAudioIO() : period(std::chrono::microseconds(40)) {
@@ -20,7 +19,7 @@ TaskAudioIO<buffersize>::~TaskAudioIO() {
 }
 
 template<std::size_t buffersize>
-void TaskAudioIO<buffersize>::run(std::queue<float>* fifo_adc_out, std::queue<float>* fifo_dac_in) {
+void TaskAudioIO<buffersize>::run(float* fifo_adc_out, float* fifo_dac_in) {
 
 	auto start = std::chrono::steady_clock::now();
 	auto stop = std::chrono::steady_clock::now();
@@ -35,8 +34,8 @@ void TaskAudioIO<buffersize>::run(std::queue<float>* fifo_adc_out, std::queue<fl
 
         if (idx_buffer_adc >= buffersize) {
             // empty buffer and send to fifo
-            for (auto sample : buffer_adc) {
-                fifo_adc_out->push(sample);
+            for (unsigned short i = 0; i < buffersize; i++) {
+                fifo_adc_out[i] = buffer_adc[i];
             }
             idx_buffer_adc = 0;
         }
@@ -45,13 +44,10 @@ void TaskAudioIO<buffersize>::run(std::queue<float>* fifo_adc_out, std::queue<fl
         buffer_adc[idx_buffer_adc++] = tmp_adc;
         
         if (idx_buffer_dac >= buffersize) {
-            if (fifo_dac_in->size() >= buffersize) {
-                for (unsigned short i = 0; i < buffersize; i++) {
-                    buffer_dac[i] = fifo_dac_in->front();
-                    fifo_dac_in->pop();
-                }
-                idx_buffer_dac = 0;
+            for (unsigned short i = 0; i < buffersize; i++) {
+                buffer_dac[i] = fifo_dac_in[i];
             }
+            idx_buffer_dac = 0;
         }
         // send sample to dac
         tmp_dac = (buffer_dac[idx_buffer_dac++] + 1.0f)*2048.0f;
@@ -79,7 +75,7 @@ void TaskAudioIO<buffersize>::run(std::queue<float>* fifo_adc_out, std::queue<fl
 
 // debug variant of run()
 template<std::size_t buffersize>
-void TaskAudioIO<buffersize>::run_debug(std::queue<int>* fifo_adc_out, std::queue<int>* fifo_dac_in, std::chrono::nanoseconds* duration, int counter) {
+void TaskAudioIO<buffersize>::run_debug(float* fifo_adc_out, float* fifo_dac_in, std::chrono::nanoseconds* duration, int counter) {
     int count = counter;
 
 	auto start = std::chrono::steady_clock::now();
@@ -97,14 +93,27 @@ void TaskAudioIO<buffersize>::run_debug(std::queue<int>* fifo_adc_out, std::queu
 
         // -------------v Do audio stuff v---------------------
 
-		// retrieve sample from adc
-		fifo_adc_out->push(this->adc.readADC(CH0_1));
-        // send sample to dac
-        if (!fifo_dac_in->empty()) {
-            bcm2835_pwm_set_data(1, fifo_dac_in->front() & 0x3F);
-            bcm2835_pwm_set_data(0, fifo_dac_in->front() >> 6);
-            fifo_dac_in->pop();
+        if (idx_buffer_adc >= buffersize) {
+            // empty buffer and send to fifo
+            for (unsigned short i = 0; i < buffersize; i++) {
+                fifo_adc_out[i] = buffer_adc[i];
+            }
+            idx_buffer_adc = 0;
         }
+		// retrieve sample from adc
+        tmp_adc = (this->adc.readADC(CH0_1)/2048.0f)-1.0f;
+        buffer_adc[idx_buffer_adc++] = tmp_adc;
+
+        if (idx_buffer_dac >= buffersize) {
+            for (unsigned short i = 0; i < buffersize; i++) {
+                buffer_dac[i] = fifo_dac_in[i];
+            }
+            idx_buffer_dac = 0;
+        }
+        // send sample to dac
+        tmp_dac = (buffer_dac[idx_buffer_dac++] + 1.0f)*2048.0f;
+        bcm2835_pwm_set_data(1, tmp_dac & 0x3F);
+        bcm2835_pwm_set_data(0, tmp_dac >> 6);
 
         // -------------^ Do audio stuff ^---------------------
 
