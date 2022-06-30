@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <thread>
+#include <atomic>
 #include <iostream>
 #include <bcm2835.h>
 
@@ -16,7 +17,7 @@ class TaskAudioIO {
         TaskAudioIO(int period_us);
         ~TaskAudioIO();
 
-        void run(float* fifo_adc_out, float* fifo_dac_in);
+        void run(float* fifo_adc_out, float* fifo_dac_in, std::atomic<bool>* new_audio_block);
         void run_debug(float* fifo_adc_out, float* fifo_dac_in, std::chrono::nanoseconds* duration, int counter); //debug variant
 
     private:

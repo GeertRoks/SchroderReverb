@@ -19,7 +19,7 @@ TaskAudioIO<buffersize>::~TaskAudioIO() {
 }
 
 template<std::size_t buffersize>
-void TaskAudioIO<buffersize>::run(float* fifo_adc_out, float* fifo_dac_in) {
+void TaskAudioIO<buffersize>::run(float* fifo_adc_out, float* fifo_dac_in, std::atomic<bool>* new_audio_block) {
 
 	auto start = std::chrono::steady_clock::now();
 	auto stop = std::chrono::steady_clock::now();
@@ -37,6 +37,7 @@ void TaskAudioIO<buffersize>::run(float* fifo_adc_out, float* fifo_dac_in) {
             for (unsigned short i = 0; i < buffersize; i++) {
                 fifo_adc_out[i] = buffer_adc[i];
             }
+            *new_audio_block = true;
             idx_buffer_adc = 0;
         }
         // retrieve sample from adc

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
-#include <queue>
 #include <atomic>
 #include <stdlib.h>
 
@@ -9,9 +8,7 @@
 #include "adc/task_audio_io.h"
 #include "adc/task_audio_io.cpp"
 
-std::atomic<bool> ui_done(false);
-
-void user_input(SchrodingersReverb *reverb) {
+void user_input(SchrodingersReverb *reverb, std::atomic<bool>* ui_done) {
   std::string mix;
 
   std::cout << "Dry wet mix (value between 0.0f - 1.0f): ";
@@ -28,7 +25,7 @@ void user_input(SchrodingersReverb *reverb) {
   } else {
       std::cout << "No input given" <<std::endl;
   }
-  ui_done = true;
+  *ui_done = true;
 }
 
 int main() {
@@ -37,25 +34,29 @@ int main() {
     SchrodingersReverb reverb(buffersize, 0);
 
     // FIFOs: naming convention: fifo_<source>_<sink>
-    std::queue<float> fifo_adc_reverb;
-    std::queue<float> fifo_reverb_dac;
+    float* fifo_adc_reverb = new float[buffersize];
+    float* fifo_reverb_dac = new float[buffersize];
 
-    std::thread audio_task(&TaskAudioIO<buffersize>::run, audio_io, &fifo_adc_reverb, &fifo_reverb_dac);
-    //std::thread audio_task(&TaskAudioIO<buffersize>::run, audio_io, &fifo_adc_reverb, &fifo_adc_reverb);
+    std::atomic<bool> ui_done(false);
+    std::atomic<bool> new_audio_block(false);
 
-    std::thread user_input_task;
-    user_input_task = std::thread(&user_input, &reverb);
+    std::thread audio_task(&TaskAudioIO<buffersize>::run, audio_io, fifo_adc_reverb, fifo_reverb_dac, &new_audio_block);
 
     std::cout << "Schroeder Reverb is running..." << std::endl;
+
+    std::thread user_input_task;
+    user_input_task = std::thread(&user_input, &reverb, &ui_done);
+
     while (1) {
-        if (fifo_adc_reverb.size() > buffersize) {
-            std::thread reverb_task(&SchrodingersReverb::process_single_task, &reverb, &fifo_adc_reverb, &fifo_reverb_dac);
+        if (new_audio_block) {
+            std::thread reverb_task(&SchrodingersReverb::process_single_task, &reverb, fifo_adc_reverb, fifo_reverb_dac);
+            new_audio_block = false;
             reverb_task.join();
             //std::cout << "fifo_adc_rev: " << fifo_adc_reverb.size() << ", fifo_rev_dac: " << fifo_reverb_dac.size() << std::endl;
         }
         if (ui_done) {
             user_input_task.join();
-            user_input_task = std::thread(&user_input, &reverb);
+            user_input_task = std::thread(&user_input, &reverb, &ui_done);
             ui_done = false;
         }
     };
