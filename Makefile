@@ -42,6 +42,9 @@ allpass_perf_test: random_tests/allpass_perf.o filters/allpassDFII.o
 sum_perf_test: random_tests/sum_perf_test.o $(REV_OBJ)
 	$(CXX) -o $@ $(CXXFLAGS) $(REV_OBJ) $< $(LDFLAGS) $(LDLIBS)
 
+sum_ap_combo_perf_test: random_tests/sum_ap_combo_perf_test.o $(REV_OBJ)
+	$(CXX) -o $@ $(CXXFLAGS) $(REV_OBJ) $< $(LDFLAGS) $(LDLIBS)
+
 edge_perf_test: random_tests/edge_perf_test.o $(REV_OBJ)
 	$(CXX) -o $@ $(CXXFLAGS) $(REV_OBJ) $< $(LDFLAGS) $(LDLIBS)
 

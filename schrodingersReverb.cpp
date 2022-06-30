@@ -6,6 +6,7 @@ SchrodingersReverb::SchrodingersReverb(unsigned short buffersize, int reverbTime
 
   this->buffersize = buffersize;
   buffer_intern_single_task = new float[buffersize];
+  buffer_sum_ap_combo = new float[buffersize];
   fifo_rev_comb1 = new float[buffersize];
   fifo_rev_comb2 = new float[buffersize];
   fifo_rev_comb3 = new float[buffersize];
@@ -79,6 +80,14 @@ void SchrodingersReverb::sum(float* sum_in1, float* sum_in2, float* sum_in3, flo
     for (i = 0; i < buffersize; i++) {
         sum_out[i] = (sum_in1[i] + sum_in2[i] + sum_in3[i] + sum_in4[i]) * 0.25f;
     }
+}
+void SchrodingersReverb::sum_ap_combo(float* sum_in1, float* sum_in2, float* sum_in3, float* sum_in4, float* ap_out, unsigned short buffersize) {
+    for (i = 0; i < buffersize; i++) {
+        buffer_sum_ap_combo[i] = (sum_in1[i] + sum_in2[i] + sum_in3[i] + sum_in4[i]) * 0.25f;
+    }
+    allpass1.process_fifo(buffer_sum_ap_combo, buffer_sum_ap_combo, buffersize);
+    allpass2.process_fifo(buffer_sum_ap_combo, buffer_sum_ap_combo, buffersize);
+    allpass3.process_fifo(buffer_sum_ap_combo, ap_out, buffersize);
 }
 
 void SchrodingersReverb::sum_intern() {

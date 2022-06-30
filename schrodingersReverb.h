@@ -19,6 +19,7 @@ public:
   void reset();
 
   void sum(float* sum_in1, float* sum_in2, float* sum_in3, float* sum_in4, float* sum_out, unsigned short buffersize = 1);
+  void sum_ap_combo(float* sum_in1, float* sum_in2, float* sum_in3, float* sum_in4, float* ap_out, unsigned short buffersize = 1);
   void fill_hyper_edge_fifos(float* edge_in, float* edge1, float* edge2, float* edge3, float* edge4, float* dry, unsigned short buffersize = 1);
 
 
@@ -42,6 +43,7 @@ private:
   Comb comb4 = Comb(1123, 0.764);
 
   float* buffer_intern_single_task;
+  float* buffer_sum_ap_combo;
 
   float* fifo_rev_comb1;
   float* fifo_rev_comb2;
