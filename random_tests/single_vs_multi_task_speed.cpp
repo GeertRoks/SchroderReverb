@@ -1,8 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <queue>
 #include <chrono>
-#include <random>
 #include <stdlib.h>
 
 #include "../schrodingersReverb.h"
@@ -35,7 +33,6 @@ int main(int argc, char* argv[]){
   }
 
   s.open("./random_tests/single_task_test.dat");
-  reverb.reset();
 
   start = std::chrono::steady_clock::now();
   reverb.process_single_task(input, output_s);
@@ -55,6 +52,7 @@ int main(int argc, char* argv[]){
   }
   s.close();
 
+  reverb.reset();
 
   m.open("./random_tests/multi_task_test.dat");
 

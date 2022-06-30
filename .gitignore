@@ -1,6 +1,7 @@
 schroederreverb
 reverb_multi_task
 reverb_single_task
+multi_task_debug_bench
 *_test
 
 *.dat

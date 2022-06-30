@@ -54,6 +54,9 @@ single_task_perf_test: random_tests/single_task_perf_test.o $(REV_OBJ)
 multi_task_perf_test: random_tests/multi_task_perf_test.o $(REV_OBJ)
 	$(CXX) -o $@ $(CXXFLAGS) $(REV_OBJ) $< $(LDFLAGS) $(LDLIBS)
 
+multi_task_debug_bench: random_tests/multi_task_debug_bench.o $(REV_OBJ)
+	$(CXX) -o $@ $(CXXFLAGS) $(REV_OBJ) $< $(LDFLAGS) $(LDLIBS)
+
 %.o: %.cpp %.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
