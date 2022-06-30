@@ -1,6 +1,7 @@
 CXXFLAGS := -Wall -std=c++11 -g
 LDFLAGS =
-LDLIBS = -lpthread -lbcm2835 -lm
+LDLIBS = -lpthread -lm
+LDLIBS_BCM = -lbcm2835
 PROGRAM_NAME = schroederreverb
 
 
@@ -16,19 +17,19 @@ perf_tests: *_perf_test
 tests: perf_tests adc_test single_vs_multi_task_test
 
 reverb_single_task: single_task_main.o $(REV_OBJ) $(ADC_OBJ)
-	$(CXX) -o $@ $(CXXFLAGS) single_task_main.o $(REV_OBJ) $(ADC_OBJ) $(LDFLAGS) $(LDLIBS)
+	$(CXX) -o $@ $(CXXFLAGS) single_task_main.o $(REV_OBJ) $(ADC_OBJ) $(LDFLAGS) $(LDLIBS) $(LDLIBS_BCM)
 
 reverb_multi_task: multi_task_main.o $(REV_OBJ) $(ADC_OBJ)
-	$(CXX) -o $@ $(CXXFLAGS) multi_task_main.o $(REV_OBJ) $(ADC_OBJ) $(LDFLAGS) $(LDLIBS)
+	$(CXX) -o $@ $(CXXFLAGS) multi_task_main.o $(REV_OBJ) $(ADC_OBJ) $(LDFLAGS) $(LDLIBS) $(LDLIBS_BCM)
 
 $(PROGRAM_NAME): $(OBJ)
-	$(CXX) -o $@ $(CXXFLAGS) $(OBJ) $(LDFLAGS) $(LDLIBS)
+	$(CXX) -o $@ $(CXXFLAGS) $(OBJ) $(LDFLAGS) $(LDLIBS) $(LDLIBS_BCM)
 
 adc_test: adc/rpi_mcp3204_test.o $(ADC_OBJ)
-	$(CXX) -o $@ $(CXXFLAGS) $< $(ADC_OBJ) $(LDFLAGS) $(LDLIBS)
+	$(CXX) -o $@ $(CXXFLAGS) $< $(ADC_OBJ) $(LDFLAGS) $(LDLIBS) $(LDLIBS_BCM)
 
 single_vs_multi_task_test: random_tests/single_vs_multi_task_speed.o $(REV_OBJ)
-	$(CXX) -o $@ $(CXXFLAGS) $< $(REV_OBJ) $(LDFLAGS) -lpthread
+	$(CXX) -o $@ $(CXXFLAGS) $< $(REV_OBJ) $(LDFLAGS) $(LDLIBS)
 
 queue_perf_test: random_tests/queue_perf.o
 	$(CXX) -o $@ $(CXXFLAGS) $< $(LDFLAGS) $(LDLIBS)

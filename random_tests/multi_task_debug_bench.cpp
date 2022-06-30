@@ -21,11 +21,13 @@ int main(int argc, char* argv[])
     std::ofstream m, s;
 
     float* input = new float[buffersize]();
-    float* output = new float[buffersize]();
+    float* output_m = new float[buffersize]();
+    float* output_s = new float[buffersize]();
+
 
     bool flip = false;
     for (int i = 0; i<buffersize; i++) {
-        if (i >> 4) {
+        if (!(i % 16)) {
             flip = !flip;
         }
         if (flip) {
@@ -34,14 +36,31 @@ int main(int argc, char* argv[])
         input[i] = -0.5f;
         }
     }
+
+    input[0] = 1.0f;
+    for (int i = 1; i<buffersize; i++) {
+        input[i] = 0.0f;
+    }
   m.open("./random_tests/multi_task_debug.dat");
+
+  reverb.process_multi_task(input, output_m);
 
   for (int i = 1; i<buffersize; i++) {
     //std::cout << "sample: " << output_m[i] << std::endl;
-    m << output[i] << std::endl;
+    m << output_m[i] << std::endl;
   }
 
   m.close();
+
+  s.open("./random_tests/single_task_debug.dat");
+
+  reverb.process_single_task(input, output_s);
+
+  for (int i = 1; i<buffersize; i++) {
+    //std::cout << "sample: " << adc_output[i] << std::endl;
+    s << output_s[i] << std::endl;
+  }
+  s.close();
 
     return 0;
 //
