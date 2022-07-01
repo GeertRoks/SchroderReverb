@@ -18,6 +18,7 @@ int main(int argc, char* argv[])
     }
 
     SchrodingersReverb reverb(buffersize, 0);
+    reverb.setDryWetMix(1.0f);
     std::ofstream m, s;
 
     float* input = new float[buffersize]();
@@ -45,7 +46,7 @@ int main(int argc, char* argv[])
 
   reverb.process_multi_task(input, output_m);
 
-  for (int i = 1; i<buffersize; i++) {
+  for (int i = 0; i<buffersize; i++) {
     //std::cout << "sample: " << output_m[i] << std::endl;
     m << output_m[i] << std::endl;
   }
@@ -56,7 +57,7 @@ int main(int argc, char* argv[])
 
   reverb.process_single_task(input, output_s);
 
-  for (int i = 1; i<buffersize; i++) {
+  for (int i = 0; i<buffersize; i++) {
     //std::cout << "sample: " << adc_output[i] << std::endl;
     s << output_s[i] << std::endl;
   }

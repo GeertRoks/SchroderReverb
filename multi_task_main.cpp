@@ -52,6 +52,7 @@ int main() {
             //std::thread reverb_task(&SchrodingersReverb::process_multi_task, &reverb, &fifo_adc_reverb, &fifo_reverb_dac);
             //reverb_task.join();
             reverb.process_multi_task(fifo_adc_reverb, fifo_reverb_dac);
+            new_audio_block = false;
             //std::cout << "fifo_adc_rev: " << fifo_adc_reverb.size() << ", fifo_rev_dac: " << fifo_reverb_dac.size() << std::endl;
         }
         if (ui_done) {
