@@ -21,15 +21,17 @@ public:
 
   // -- tasks --
   void  single_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
-  //void  hyper_edge_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
-  //void  comb1_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
-  //void  comb2_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
-  //void  comb3_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
-  //void  comb4_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
-  //void  sum_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
-  //void  allpass1_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
-  //void  allpass2_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
-  //void  allpass3_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  void hyper_edge_task(RTS_Buffer<float>* edge_in, RTS_Buffer<float>* edge1, RTS_Buffer<float>* edge2, RTS_Buffer<float>* edge3, RTS_Buffer<float>* edge4, RTS_Buffer<float>* dry);
+  void  comb1_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  void  comb2_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  void  comb3_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  void  comb4_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  void  sum_task(RTS_Buffer<float>* sum_in1, RTS_Buffer<float>* sum_in2, RTS_Buffer<float>* sum_in3, RTS_Buffer<float>* sum_in4, RTS_Buffer<float>* sum_out);
+  void  sum_ap_task(RTS_Buffer<float>* sum_in1, RTS_Buffer<float>* sum_in2, RTS_Buffer<float>* sum_in3, RTS_Buffer<float>* sum_in4, RTS_Buffer<float>* ap_out);
+  void  allpass1_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  void  allpass2_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  void  allpass3_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  void  dry_wet_mix_task(RTS_Buffer<float>* dry, RTS_Buffer<float>* wet, RTS_Buffer<float>* mix);
 
   void sum(float* sum_in1, float* sum_in2, float* sum_in3, float* sum_in4, float* sum_out, unsigned short buffersize = 1);
   void sum_ap_combo(float* sum_in1, float* sum_in2, float* sum_in3, float* sum_in4, float* ap_out, unsigned short buffersize = 1);
@@ -39,6 +41,8 @@ public:
   void drywetmix(float* dry_in, float* wet_in, float* mix_out, unsigned short buffersize);
   void setDryWetMix(float mix);
   void reset();
+
+  void setSingleRunMode() { single_run = true; }
 
 private:
   void fill_hyper_edge_fifos_intern(float* input);
@@ -88,6 +92,7 @@ private:
   unsigned short i = 0;
 
   float dry_wet_mix = 0.9f; //percentage of wet sound
+  bool single_run = false;
 
 };//class
 
