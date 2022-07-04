@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../../filters/comb.h"
+#include "../../src/filters/comb.h"
 
 int main(int argc, char* argv[])
 {

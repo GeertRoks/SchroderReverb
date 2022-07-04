@@ -5,14 +5,14 @@ LDLIBS_BCM = -lbcm2835
 PROGRAM_NAME = schroederreverb
 
 BIN_DIR = bin
-OBJ_DIR = $(BIN_DIR)/obj
+SRC_DIR = src
 SRC_TEST_DIR = tests
 
 # --- Source files ---
 
-MAIN_FILES = single_task_main.cpp multi_task_main.cpp main.cpp
-REV_FILES = schrodingersReverb.cpp filters/allpassDFII.cpp filters/comb.cpp
-ADC_FILES = adc/task_audio_io.o adc/MCP3204_BCM2835/MCP3204_BCM2835.o
+MAIN_FILES = src/single_task_main.cpp src/multi_task_main.cpp src/main.cpp
+REV_FILES = src/schrodingersReverb.cpp src/filters/allpassDFII.cpp src/filters/comb.cpp
+ADC_FILES = src/adc/task_audio_io.o src/adc/MCP3204_BCM2835/MCP3204_BCM2835.o
 
 PERF_TEST_FILES = $(wildcard tests/perf_tests/*.cpp)
 COMPARISON_TEST_FILES = $(wildcard tests/comparison_tests/*.cpp)

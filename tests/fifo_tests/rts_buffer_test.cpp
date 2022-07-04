@@ -1,7 +1,7 @@
 #include <iostream>
 #include <assert.h>
 
-#include "../../rts_buffer.h"
+#include "../../src/rts_buffer.h"
 
 int main() {
 

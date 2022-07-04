@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../../filters/allpassDFII.h"
+#include "../../src/filters/allpassDFII.h"
 
 int main(int argc, char* argv[])
 {

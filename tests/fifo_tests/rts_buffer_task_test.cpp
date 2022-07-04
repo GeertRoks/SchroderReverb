@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <thread>
 
-#include "../../rts_buffer.h"
+#include "../../src/rts_buffer.h"
 
 void task(RTS_Buffer<float>* input, RTS_Buffer<float>* output, std::size_t* buffersize) {
   float* buffer = new float[*buffersize];
