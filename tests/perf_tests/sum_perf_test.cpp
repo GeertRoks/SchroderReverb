@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../schrodingersReverb.h"
+#include "../../schrodingersReverb.h"
 
 int main(int argc, char* argv[])
 {
@@ -44,11 +44,11 @@ int main(int argc, char* argv[])
     std::cout << "Sum perf Test: Using loop_amount: " << loop_amount << std::endl;
 
     while (count > 0) {
-        start = std::chrono::steady_clock::now();
         reverb.fill_hyper_edge_fifos(sum, edge1, edge2, edge3, edge4, dry, buffersize);
-        stop = std::chrono::steady_clock::now();
 
+        start = std::chrono::steady_clock::now();
         reverb.sum(edge1, edge2, edge3, edge4, sum, buffersize);
+        stop = std::chrono::steady_clock::now();
 
         duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop-start);
 
@@ -67,4 +67,3 @@ int main(int argc, char* argv[])
     std::cout << "max runtime: " << push_max << " ns, per sample: " << push_max/buffersize << " ns" << std::endl;
     return 0;
 }
-

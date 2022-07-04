@@ -6,3 +6,4 @@ multi_task_debug_bench
 
 *.dat
 *.o
+*.swp

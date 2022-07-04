@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../schrodingersReverb.h"
+#include "../../schrodingersReverb.h"
 
 int main(int argc, char* argv[])
 {
@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    SchrodingersReverb reverb(64, 0);
+    SchrodingersReverb reverb(buffersize, 0);
 
     std::chrono::time_point<std::chrono::steady_clock> start;
     std::chrono::time_point<std::chrono::steady_clock> stop;
@@ -29,25 +29,19 @@ int main(int argc, char* argv[])
     unsigned int push_max = 0;
     unsigned int push_min = 0 - 1;
 
-    float edge1[buffersize] = {};
-    float edge2[buffersize] = {};
-    float edge3[buffersize] = {};
-    float edge4[buffersize] = {};
-    float dry[buffersize] = {};
-    float sum[buffersize] = {};
+    float input[buffersize] = {};
+    float output[buffersize] = {};
 
-    sum[0] = 1.0f;
+    input[0] = 1.0f;
     for (int i = 1; i<buffersize; i++) {
-        sum[i] = 0.0f;
+        input[i] = 0.0f;
     }
 
-    std::cout << "Sum perf Test: Using loop_amount: " << loop_amount << std::endl;
+    std::cout << "Single task perf Test: Using loop_amount: " << loop_amount << std::endl;
 
     while (count > 0) {
-        reverb.fill_hyper_edge_fifos(sum, edge1, edge2, edge3, edge4, dry, buffersize);
-
         start = std::chrono::steady_clock::now();
-        reverb.sum(edge1, edge2, edge3, edge4, sum, buffersize);
+        reverb.process_single_task(input, output);
         stop = std::chrono::steady_clock::now();
 
         duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop-start);
@@ -59,6 +53,7 @@ int main(int argc, char* argv[])
         if (duration.count() < push_min) {
             push_min = duration.count();
         }
+
 
         count --;
     }

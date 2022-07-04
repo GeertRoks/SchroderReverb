@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../schrodingersReverb.h"
+#include "../../schrodingersReverb.h"
 
 int main(int argc, char* argv[])
 {

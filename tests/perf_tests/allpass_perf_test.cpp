@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../schrodingersReverb.h"
+#include "../../filters/allpassDFII.h"
 
 int main(int argc, char* argv[])
 {
@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    SchrodingersReverb reverb(buffersize, 0);
+    AllpassDFII allpass(347, 0.70);
 
     std::chrono::time_point<std::chrono::steady_clock> start;
     std::chrono::time_point<std::chrono::steady_clock> stop;
@@ -29,25 +29,19 @@ int main(int argc, char* argv[])
     unsigned int push_max = 0;
     unsigned int push_min = 0 - 1;
 
-    float edge1[buffersize] = {};
-    float edge2[buffersize] = {};
-    float edge3[buffersize] = {};
-    float edge4[buffersize] = {};
-    float dry[buffersize] = {};
-    float sum[buffersize] = {};
+    float input[buffersize] = {};
+    float output[buffersize] = {};
 
-    sum[0] = 1.0f;
+    input[0] = 1.0f;
     for (int i = 1; i<buffersize; i++) {
-        sum[i] = 0.0f;
+        input[i] = 0.0f;
     }
 
-    std::cout << "Sum-Allpass combo task perf Test: Using loop_amount: " << loop_amount << std::endl;
+    std::cout << "AllpassDFII perf Test: Using loop_amount: " << loop_amount << std::endl;
 
     while (count > 0) {
-        reverb.fill_hyper_edge_fifos(sum, edge1, edge2, edge3, edge4, dry, buffersize);
-
         start = std::chrono::steady_clock::now();
-        reverb.sum_ap_combo(edge1, edge2, edge3, edge4, sum, buffersize);
+        allpass.process_fifo(input, output, buffersize);
         stop = std::chrono::steady_clock::now();
 
         duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop-start);
@@ -67,5 +61,3 @@ int main(int argc, char* argv[])
     std::cout << "max runtime: " << push_max << " ns, per sample: " << push_max/buffersize << " ns" << std::endl;
     return 0;
 }
-
-

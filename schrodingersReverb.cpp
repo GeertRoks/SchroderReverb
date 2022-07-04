@@ -70,6 +70,18 @@ void SchrodingersReverb::process_multi_task(float* input, float* output) {
   drywetmix(fifo_rev_dry, fifo_ap3_wet, output, buffersize);
 }
 
+void SchrodingersReverb::single_task(RTS_Buffer<float> *input, RTS_Buffer<float> *output) {
+  float* buffer = new float[buffersize];
+  while (1) {
+    input->read(buffer);
+    buffer[i] = ( comb1.process(buffer[i]) + comb2.process(buffer[i]) + comb3.process(buffer[i]) + comb4.process(buffer[i]) ) * 0.25;
+    buffer[i] = allpass1.process(buffer[i]);
+    buffer[i] = allpass2.process(buffer[i]);
+    buffer[i] = allpass3.process(buffer[i]);
+    while(!output->write(buffer)) {}
+  }
+}
+
 void SchrodingersReverb::drywetmix(float* dry_in, float* wet_in, float* mix_out, unsigned short buffersize) {
     for (i = 0; i < buffersize; i++) {
         mix_out[i] = (dry_wet_mix * wet_in[i]) + ((1.0f - dry_wet_mix) * dry_in[i]);

@@ -3,9 +3,11 @@
 
 #include <iostream>
 #include <thread>
+#include <atomic>
 
 #include "filters/allpassDFII.h"
 #include "filters/comb.h"
+#include "rts_buffer.h"
 
 class SchrodingersReverb {
 
@@ -16,7 +18,18 @@ public:
   float process(float x);
   void  process_single_task(float* input, float* output);
   void  process_multi_task(float* input, float* output);
-  void reset();
+
+  // -- tasks --
+  void  single_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  //void  hyper_edge_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  //void  comb1_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  //void  comb2_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  //void  comb3_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  //void  comb4_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  //void  sum_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  //void  allpass1_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  //void  allpass2_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
+  //void  allpass3_task(RTS_Buffer<float>* input, RTS_Buffer<float>* output);
 
   void sum(float* sum_in1, float* sum_in2, float* sum_in3, float* sum_in4, float* sum_out, unsigned short buffersize = 1);
   void sum_ap_combo(float* sum_in1, float* sum_in2, float* sum_in3, float* sum_in4, float* ap_out, unsigned short buffersize = 1);
@@ -25,6 +38,7 @@ public:
 
   void drywetmix(float* dry_in, float* wet_in, float* mix_out, unsigned short buffersize);
   void setDryWetMix(float mix);
+  void reset();
 
 private:
   void fill_hyper_edge_fifos_intern(float* input);

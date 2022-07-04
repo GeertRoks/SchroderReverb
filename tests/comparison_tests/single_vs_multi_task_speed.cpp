@@ -3,7 +3,7 @@
 #include <chrono>
 #include <stdlib.h>
 
-#include "../schrodingersReverb.h"
+#include "../../schrodingersReverb.h"
 
 int main(int argc, char* argv[]){
   unsigned short buffersize = 128;
