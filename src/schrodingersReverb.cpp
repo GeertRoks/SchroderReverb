@@ -85,11 +85,11 @@ void SchrodingersReverb::hyper_edge_task(RTS_Buffer<float>* edge_in, RTS_Buffer<
   float* buffer = new float[buffersize];
   do {
     edge_in->read(buffer);
-    while(!edge1->write(buffer)) { std::cout << "hyper_edge_task()-edge1: waiting to output\n";}
-    while(!edge2->write(buffer)) { std::cout << "hyper_edge_task()-edge2: waiting to output\n";}
-    while(!edge3->write(buffer)) { std::cout << "hyper_edge_task()-edge3: waiting to output\n";}
-    while(!edge4->write(buffer)) { std::cout << "hyper_edge_task()-edge4: waiting to output\n";}
-    while(!dry->write(buffer)) { std::cout << "hyper_edge_task()-dry: waiting to output\n";}
+    while(!edge1->write(buffer)) { if(single_run) {std::cout << "hyper_edge_task()-edge1: waiting to output\n";}}
+    while(!edge2->write(buffer)) { if(single_run) {std::cout << "hyper_edge_task()-edge2: waiting to output\n";}}
+    while(!edge3->write(buffer)) { if(single_run) {std::cout << "hyper_edge_task()-edge3: waiting to output\n";}}
+    while(!edge4->write(buffer)) { if(single_run) {std::cout << "hyper_edge_task()-edge4: waiting to output\n";}}
+    while(!dry->write(buffer)) { if(single_run) {std::cout << "hyper_edge_task()-dry: waiting to output\n";}}
   } while (!single_run);
 }
 
@@ -107,7 +107,7 @@ void SchrodingersReverb::sum_task(RTS_Buffer<float> *sum_in1, RTS_Buffer<float> 
     for (i = 0; i < buffersize; i++) {
       buffer[i] = ( buffer1[i] + buffer2[i] + buffer3[i] + buffer4[i] ) * 0.25f;
     }
-    while(!sum_out->write(buffer)) { std::cout << "sum_task(): waiting to output\n";}
+    while(!sum_out->write(buffer)) { if(single_run) {std::cout << "sum_task(): waiting to output\n";}}
   } while (!single_run);
 }
 
@@ -128,7 +128,7 @@ void SchrodingersReverb::sum_ap_task(RTS_Buffer<float> *sum_in1, RTS_Buffer<floa
     allpass1.process_fifo(buffer, buffer, buffersize);
     allpass2.process_fifo(buffer, buffer, buffersize);
     allpass3.process_fifo(buffer, buffer, buffersize);
-    while(!ap_out->write(buffer)) { std::cout << "sum_ap_task(): waiting to output\n";}
+    while(!ap_out->write(buffer)) { if(single_run) {std::cout << "sum_ap_task(): waiting to output\n";}}
   } while (!single_run);
 }
 
@@ -137,7 +137,7 @@ void SchrodingersReverb::allpass1_task(RTS_Buffer<float> *input, RTS_Buffer<floa
   do {
     input->read(buffer);
     allpass1.process_fifo(buffer, buffer, buffersize);
-    while(!output->write(buffer)) { std::cout << "allpass1_task(): waiting to output\n";}
+    while(!output->write(buffer)) { if(single_run) {std::cout << "allpass1_task(): waiting to output\n";}}
   }while (!single_run);
 }
 
@@ -146,7 +146,7 @@ void SchrodingersReverb::allpass2_task(RTS_Buffer<float> *input, RTS_Buffer<floa
   do {
     input->read(buffer);
     allpass2.process_fifo(buffer, buffer, buffersize);
-    while(!output->write(buffer)) { std::cout << "allpass2_task(): waiting to output\n";}
+    while(!output->write(buffer)) { if(single_run) {std::cout << "allpass2_task(): waiting to output\n";}}
   }while (!single_run);
 }
 
@@ -155,7 +155,7 @@ void SchrodingersReverb::allpass3_task(RTS_Buffer<float> *input, RTS_Buffer<floa
   do {
     input->read(buffer);
     allpass3.process_fifo(buffer, buffer, buffersize);
-    while(!output->write(buffer)) { std::cout << "allpass3_task(): waiting to output\n";}
+    while(!output->write(buffer)) { if(single_run) {std::cout << "allpass3_task(): waiting to output\n";}}
   }while (!single_run);
 }
 
@@ -164,7 +164,7 @@ void SchrodingersReverb::comb1_task(RTS_Buffer<float> *input, RTS_Buffer<float> 
   do {
     input->read(buffer);
     comb1.process_fifo(buffer, buffer, buffersize);
-    while(!output->write(buffer)) { std::cout << "comb1_task(): waiting to output\n";}
+    while(!output->write(buffer)) { if(single_run) {std::cout << "comb1_task(): waiting to output\n";}}
   }while (!single_run);
 }
 
@@ -173,7 +173,7 @@ void SchrodingersReverb::comb2_task(RTS_Buffer<float> *input, RTS_Buffer<float> 
   do {
     input->read(buffer);
     comb2.process_fifo(buffer, buffer, buffersize);
-    while(!output->write(buffer)) { std::cout << "comb2_task(): waiting to output\n";}
+    while(!output->write(buffer)) { if(single_run) {std::cout << "comb2_task(): waiting to output\n";}}
   }while (!single_run);
 }
 
@@ -182,7 +182,7 @@ void SchrodingersReverb::comb3_task(RTS_Buffer<float> *input, RTS_Buffer<float> 
   do {
     input->read(buffer);
     comb3.process_fifo(buffer, buffer, buffersize);
-    while(!output->write(buffer)) { std::cout << "comb3_task(): waiting to output\n";}
+    while(!output->write(buffer)) { if(single_run) {std::cout << "comb3_task(): waiting to output\n";}}
   }while (!single_run);
 }
 
@@ -191,7 +191,7 @@ void SchrodingersReverb::comb4_task(RTS_Buffer<float> *input, RTS_Buffer<float> 
   do {
     input->read(buffer);
     comb4.process_fifo(buffer, buffer, buffersize);
-    while(!output->write(buffer)) { std::cout << "comb4_task(): waiting to output\n";}
+    while(!output->write(buffer)) { if(single_run) {std::cout << "comb4_task(): waiting to output\n";}}
   }while (!single_run);
 }
 
@@ -205,7 +205,7 @@ void SchrodingersReverb::dry_wet_mix_task(RTS_Buffer<float> *dry, RTS_Buffer<flo
     for (i = 0; i < buffersize; i++) {
         buffer_mix[i] = (dry_wet_mix * buffer_wet[i]) + ((1.0f - dry_wet_mix) * buffer_dry[i]);
     }
-    while(!mix->write(buffer_mix)) { std::cout << "dry_wet_mix_task(): waiting to output\n";}
+    while(!mix->write(buffer_mix)) { if(single_run) {std::cout << "dry_wet_mix_task(): waiting to output\n";}}
   }while (!single_run);
 }
 
