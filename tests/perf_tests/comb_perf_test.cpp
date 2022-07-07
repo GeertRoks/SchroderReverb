@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <chrono>
 #include <math.h>
 #include <stdlib.h>
@@ -73,8 +74,15 @@ int main(int argc, char* argv[])
     }
     std::cout << std::endl;
 
-    std::cout << "avg runtime: " << push_avg/loop_amount << " ns, per sample: " << push_avg/(loop_amount*buffersize) << " ns" << std::endl;
-    std::cout << "min runtime: " << push_min << " ns, per sample: " << push_min/buffersize << "ns" << std::endl;
-    std::cout << "max runtime: " << push_max << " ns, per sample: " << push_max/buffersize << " ns" << std::endl;
+    //std::cout << "avg runtime: " << push_avg/loop_amount << " ns, per sample: " << push_avg/(loop_amount*buffersize) << " ns" << std::endl;
+    //std::cout << "min runtime: " << push_min << " ns, per sample: " << push_min/buffersize << "ns" << std::endl;
+    //std::cout << "max runtime: " << push_max << " ns, per sample: " << push_max/buffersize << " ns" << std::endl;
+
+    std::cout << "=======================================================================" << std::endl;
+
+    std::cout << std::setw(14) << std::left << "& buffer size" << std::setw(20) << "& avg" << std::setw(20) << "& min" << std::setw(20) << "& max" << "\\\\" << std::endl;
+    std::cout << "& " << std::setw(12) << std::left << buffersize << "& " << std::setw(18) << push_avg/loop_amount << "& " << std::setw(18) << push_min << "& " << std::setw(18) << push_max << "\\\\" << std::endl;
+    std::cout << "& " << std::setw(12) << buffersize << "& " << std::setw(18) << push_avg/(loop_amount*buffersize) << "& " << std::setw(18) << push_min/buffersize << "& " << std::setw(18) << push_max/buffersize << "\\\\" << std::endl;
+
     return 0;
 }
